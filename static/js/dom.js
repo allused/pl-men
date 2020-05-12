@@ -1,13 +1,14 @@
 // It uses data_handler.js to visualize elements
-import { dataHandler } from "./data_handler.js";
+import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
-        // This function should run once, when the page is loaded.
+        dom.getTitle();
+        dom.newBoardButton();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
     },
@@ -17,7 +18,7 @@ export let dom = {
 
         let boardList = '';
 
-        for(let board of boards){
+        for (let board of boards) {
             boardList += `
                 <li>${board.title}</li>
             `;
@@ -39,5 +40,19 @@ export let dom = {
         // shows the cards of a board
         // it adds necessary event listeners also
     },
-    // here comes more features
+    showBoard: function(title){
+        let boardsContainer = document.querySelector('#boards');
+
+
+    },
+    newBoardButton: function () {
+        let title =  prompt('Enter the new board title:')
+        console.log(title)
+    },
+
+
+    getTitle: function () {
+        let newBoardBt = document.getElementById('new-board');
+        newBoardBt.addEventListener('click', dom.newBoardButton)
+    },
 };

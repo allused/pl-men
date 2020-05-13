@@ -5,6 +5,7 @@ export let dom = {
     init: function () {
         dom.getTitle();
         dom.newBoardButton();
+        dom.createBoard(dom.newBoardButton());
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -47,7 +48,43 @@ export let dom = {
     },
     newBoardButton: function () {
         let title =  prompt('Enter the new board title:')
-        console.log(title)
+        return title
+    },
+    createBoard: function(title){
+
+
+        const boardHead= `<div class="board-header"><span class="board-title">${title} 1</span>
+                            <button class="board-add">Add Card</button>
+                            <button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
+                        </div>`;
+
+        const columnNew = `<div class="board-column-title">New</div>
+                                <div class="board-column-content"></div>`;
+
+        const columnInProg = `<div class="board-column-title">In Progress</div>
+                                <div class="board-column-content"></div>`;
+
+        const columnTesting = `<div class="board-column-title">Testing</div>
+                                <div class="board-column-content"></div>`;
+
+        const columnDone = `<div class="board-column-title">Done</div>
+                            <div class="board-column-content"></div>`;
+
+
+        let columnList = [columnNew, columnInProg, columnTesting, columnDone];
+
+        let columToAppend = '';
+
+        for (let column of columnList){
+            columToAppend += `<div class="board-column">${column}</div>`;
+        }
+        const boardColumns = `<div class="board-columns">${columToAppend}</div>`;
+
+        const boardSection = `<section class="board">${boardHead},${boardColumns}</section>`;
+
+        let boardsContainer = document.querySelector('.board-container');
+        boardsContainer.insertAdjacentHTML("beforeend", boardSection);
+
     },
 
 

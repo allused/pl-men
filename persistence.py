@@ -1,3 +1,6 @@
+from psycopg2.extras import RealDictCursor
+import database_common
+
 # import csv
 # import sql_data_handler as sql
 #
@@ -51,10 +54,6 @@
 # def get_cards(force=False):
 #     return _get_data('cards', CARDS_FILE, force)
 
-from psycopg2.extras import RealDictCursor
-import database_common
-from psycopg2 import sql
-
 
 @database_common.connection_handler
 def get_table_data(cursor: RealDictCursor, table):
@@ -84,3 +83,11 @@ def rename(cursor, table, _id, new_title):
     """, {'_id': _id, 'new_title': new_title})
 
 
+
+@database_common.connection_handler
+def save_new_board(cursor, title):
+    query = """
+        INSERT INTO boards (title)
+        VALUES (%(title)s);
+        """
+    cursor.execute(query, {'title':title})

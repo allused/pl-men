@@ -42,3 +42,6 @@ def get_cards_for_board(board_id):
 
 def create_card(board_id, title):
     return persistence.create_card(board_id, title)
+
+def add_new_board(title):
+    return persistence.save_new_board(title)

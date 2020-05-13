@@ -17,9 +17,24 @@ export let dataHandler = {
         .then(json_response => callback(json_response));  // Call the `callback` with the returned object
     },
     _api_post: function (url, data, callback) {
-        // it is not called from outside
-        // sends the data to the API, and calls callback function
+
+        fetch(url,{
+            method:'POST',
+            cache: 'no-cache',
+            credentials: "include",
+            body: JSON.stringify(data),
+            headers: new Headers({"content-type": "application/json"})
+
+
+        })
     },
+    _saveRecord: function (newRecord, tableName) {
+        // it is not called from outside
+        $.post(`http://0.0.0.0:4000/api/${tableName}/insert`, newRecord, function (data) {
+            let objectOfNewRecord = JSON.parse(data);
+            dataHandler._data[tableName].push(objectOfNewRecord);
+        })},
+
     init: function () {
     },
     getBoards: function (callback) {
@@ -53,7 +68,7 @@ export let dataHandler = {
         // the card is retrieved and then the callback function is called with the card
     },
     createNewBoard: function (boardTitle, callback) {
-
+        this._api_post('http://127.0.0.1:5000/save-board', boardTitle, callback);
     },
     createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data

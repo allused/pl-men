@@ -72,3 +72,11 @@ def create_card(cursor, board_id, title):
         VALUES (%(board_id)s, %(title)s);
         """
     cursor.execute(query, {'board_id': board_id, 'title': title})
+
+@database_common.connection_handler
+def save_new_board(cursor, title):
+    query = """
+        INSERT INTO boards (title)
+        VALUES (%(title)s);
+        """
+    cursor.execute(query, {'title':title})

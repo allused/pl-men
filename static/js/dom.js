@@ -3,7 +3,7 @@ import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
-        dom.getTitle();
+        dom.newBoardButton();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -44,9 +44,10 @@ export let dom = {
 
 
     },
-    newBoardButton: function () {
-        let title =  prompt('Enter the new board title:')
-        dom.createBoard(title)
+    getTitle: function () {
+        let title =  prompt('Enter the new board title:');
+        dom.createBoard(title);
+        return title
     },
     createBoard: function(title){
 
@@ -86,8 +87,8 @@ export let dom = {
     },
 
 
-    getTitle: function () {
+    newBoardButton: function () {
         let newBoardBt = document.getElementById('new-board');
-        newBoardBt.addEventListener('click', dom.newBoardButton);
+        newBoardBt.addEventListener('click', dom.getTitle);
     },
 };

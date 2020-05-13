@@ -35,3 +35,7 @@ def get_cards_for_board(board_id):
 
 def create_card(board_id, title):
     return persistence.create_card(board_id, title)
+
+
+def rename(table, _id, title):
+    return persistence.rename(table, _id, title)

@@ -4,8 +4,6 @@ import {dataHandler} from "./data_handler.js";
 export let dom = {
     init: function () {
         dom.getTitle();
-        dom.newBoardButton();
-        dom.createBoard(dom.newBoardButton());
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -48,12 +46,12 @@ export let dom = {
     },
     newBoardButton: function () {
         let title =  prompt('Enter the new board title:')
-        return title
+        dom.createBoard(title)
     },
     createBoard: function(title){
 
 
-        const boardHead= `<div class="board-header"><span class="board-title">${title} 1</span>
+        const boardHead= `<div class="board-header"><span class="board-title">${title} </span>
                             <button class="board-add">Add Card</button>
                             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
                         </div>`;
@@ -80,7 +78,7 @@ export let dom = {
         }
         const boardColumns = `<div class="board-columns">${columToAppend}</div>`;
 
-        const boardSection = `<section class="board">${boardHead},${boardColumns}</section>`;
+        const boardSection = `<section class="board">${boardHead}${boardColumns}</section>`;
 
         let boardsContainer = document.querySelector('.board-container');
         boardsContainer.insertAdjacentHTML("beforeend", boardSection);
@@ -90,6 +88,6 @@ export let dom = {
 
     getTitle: function () {
         let newBoardBt = document.getElementById('new-board');
-        newBoardBt.addEventListener('click', dom.newBoardButton)
+        newBoardBt.addEventListener('click', dom.newBoardButton);
     },
 };

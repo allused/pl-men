@@ -16,7 +16,6 @@ def get_boards():
     Gather all boards
     :return:
     """
-
     # return persistence.get_boards(force=True)
     return persistence.get_table_data(table="boards")
 
@@ -31,3 +30,7 @@ def get_cards_for_board(board_id):
             card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
             matching_cards.append(card)
     return matching_cards
+
+
+def create_card(board_id, title):
+    return persistence.create_card(board_id, title)

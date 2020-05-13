@@ -20,6 +20,14 @@ def get_boards():
     return persistence.get_table_data(table="boards")
 
 
+def get_statuses():
+    """
+    Gather all statuses
+    :return:
+    """
+    return persistence.get_table_data(table="statuses")
+
+
 def get_cards_for_board(board_id):
     # persistence.clear_cache()
     # all_cards = persistence.get_cards()

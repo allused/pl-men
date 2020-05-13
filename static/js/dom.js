@@ -46,6 +46,8 @@ export let dom = {
                         <span class="board-title">
                             ${boards[i].title}
                         </span>
+                        <button class="board-add">Add Card</button>
+                        <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
                     </div>
                     ${boardColumns}
                 </section>`
@@ -79,16 +81,16 @@ export let dom = {
     },
     getTitle: function () {
         let title =  prompt('Enter the new board title:');
-        dom.createBoard(title);
-        return title
+        dataHandler.createNewBoard(title, dataHandler._api_post,dom.createBoard(title));
     },
+
+
     createBoard: function(title){
 
 
-        const boardHead= `<div class="board-header"><span class="board-title">${title} </span>
-                            <button class="board-add">Add Card</button>
-                            <button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
-                        </div>`;
+        const boardHead = `<div class="board-header"><span class="board-title">${title}</span>
+                            <button class="board-add">Add Card</button><button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
+                            </div>`;
 
         const columnNew = `<div class="board-column-title">New</div>
                                 <div class="board-column-content"></div>`;
@@ -116,6 +118,15 @@ export let dom = {
 
         let boardsContainer = document.querySelector('.board-container');
         boardsContainer.insertAdjacentHTML("beforeend", boardSection);
+
+    },
+    newCard: function(title){
+
+        const card = `<div class="card">
+                            <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                            <div class="card-title">${title}</div>
+                        </div>`
+
 
     },
 

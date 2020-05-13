@@ -73,3 +73,11 @@ def create_card(cursor, board_id, title):
         VALUES (%(board_id)s, %(title)s);
         """
     cursor.execute(query, {'board_id': board_id, 'title': title})
+
+
+@database_common.connection_handler
+def rename_board(cursor, board_id, new_title):
+    cursor.execute("""
+    UPDATE boards
+    SET title = %(new_title)s
+    WHERE id = %(board_id)s""", {'board_id': board_id, 'new_title': new_title})

@@ -47,3 +47,7 @@ def get_user_by_name(username):
 
 def save_user_data(user_data):
     persistence.save_user_data(user_data)
+
+
+def add_new_board(title):
+    return persistence.save_new_board(title)

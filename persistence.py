@@ -101,3 +101,11 @@ def save_user_data(cursor, user_data):
     VALUES (%(username)s, %(password)s, %(email)s);
     """, user_data)
 
+
+@database_common.connection_handler
+def save_new_board(cursor, title):
+    query = """
+        INSERT INTO boards (title)
+        VALUES (%(title)s);
+        """
+    cursor.execute(query, {'title': title})

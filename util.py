@@ -3,6 +3,7 @@ from flask import jsonify
 import bcrypt
 import data_handler
 
+
 def json_response(func):
     """
     Converts the returned dictionary into a JSON response

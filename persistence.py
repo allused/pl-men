@@ -53,6 +53,7 @@
 
 from psycopg2.extras import RealDictCursor
 import database_common
+from psycopg2 import sql
 
 
 @database_common.connection_handler
@@ -63,3 +64,12 @@ def get_table_data(cursor: RealDictCursor, table):
     cursor.execute(query)
     table_data = cursor.fetchall()
     return table_data
+
+
+@database_common.connection_handler
+def create_card(cursor, board_id, title):
+    query = """
+        INSERT INTO cards (board_id, title)
+        VALUES (%(board_id)s, %(title)s);
+        """
+    cursor.execute(query, {'board_id': board_id, 'title': title})

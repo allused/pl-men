@@ -47,15 +47,3 @@ alter table cards
 		primary key (id);
 
 
-INSERT INTO boards (title) VALUES ('Board 1');
-INSERT INTO boards (title) VALUES ('Board 2');
-
-INSERT INTO statuses (id, title) VALUES (0, 'new');
-INSERT INTO statuses (title) VALUES ('in progress');
-INSERT INTO statuses (title) VALUES ('testing');
-INSERT INTO statuses (title) VALUES ('done');
-
-INSERT INTO cards (board_id, title, status_id, "order") VALUES (1, 'new card 1', 0, 0);
-INSERT INTO cards (board_id, title, status_id, "order") VALUES (1, 'in progress card 1', 1, 1);
-INSERT INTO cards (board_id, title, status_id, "order") VALUES (1, 'planning', 2, 0);
-INSERT INTO cards (board_id, title, status_id, "order") VALUES (2, 'done card 1', 3, 0);

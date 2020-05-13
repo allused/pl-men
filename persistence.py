@@ -1,3 +1,6 @@
+from psycopg2.extras import RealDictCursor
+import database_common
+
 # import csv
 # import sql_data_handler as sql
 #
@@ -50,10 +53,6 @@
 #
 # def get_cards(force=False):
 #     return _get_data('cards', CARDS_FILE, force)
-
-from psycopg2.extras import RealDictCursor
-import database_common
-from psycopg2 import sql
 
 
 @database_common.connection_handler

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request
 from util import json_response
 
 import data_handler
@@ -12,6 +12,13 @@ def index():
     This is a one-pager which shows all the boards and cards
     """
     return render_template('index.html')
+
+
+# @app.route('/login', methods='POST', 'GET')
+# def login():
+#     if request.method == 'POST':
+
+
 
 
 @app.route("/get-boards")

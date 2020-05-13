@@ -11,6 +11,7 @@ def get_card_status(status_id):
     statuses = persistence.get_table_data(table="statuses")
     return next((status['title'] for status in statuses if status['id'] == str(status_id)), 'Unknown')
 
+
 def get_boards():
     """
     Gather all boards
@@ -18,14 +19,6 @@ def get_boards():
     """
     # return persistence.get_boards(force=True)
     return persistence.get_table_data(table="boards")
-
-
-def get_statuses():
-    """
-    Gather all statuses
-    :return:
-    """
-    return persistence.get_table_data(table="statuses")
 
 
 def get_cards_for_board(board_id):
@@ -45,7 +38,12 @@ def create_card(board_id, title):
 
 
 def rename(table, _id, title):
-    return persistence.rename(table, _id, title)
+    persistence.rename(table, _id, title)
 
-def add_new_board(title):
-    return persistence.save_new_board(title)
+
+def get_user_by_name(username):
+    return persistence.get_user_data_by_name(username)
+
+
+def save_user_data(user_data):
+    persistence.save_user_data(user_data)

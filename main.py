@@ -1,5 +1,7 @@
-from flask import Flask, render_template, url_for,request, jsonify, make_response
+from flask import Flask, render_template, url_for, request, session, redirect
 from util import json_response
+import util
+
 import data_handler
 
 app = Flask(__name__)
@@ -13,11 +15,41 @@ def index():
     return render_template('index.html')
 
 
-# @app.route('/login', methods='POST', 'GET')
-# def login():
-#     if request.method == 'POST':
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        register_details = {
+            'username': request.form['username'],
+            'password': util.hash_pass(request.form['password']),
+            'verification': util.hash_pass(request.form['verification']),
+            'email': request.form['email']
+        }
+        if util.verify_password(register_details['password'], register_details['verification']):
+            data_handler.save_user_data(register_details)
+            return redirect('/login')
+    return render_template('register.html')
 
 
+@app.route('/login', methods='POST', 'GET')
+def login():
+    if request.method == 'POST':
+        login_details = {
+            'username': request.form['username'],
+            'password': util.hash_pass(request.form['password'])
+        }
+        if util.check_login(login_details['username'], login_details['password']):
+            user_data = data_handler.get_user_by_name(login_details['username'])
+            for key in user_data:
+                session[key] = user_data[key]
+            return redirect('/')
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    for key in session:
+        session.pop(key, None)
+    return redirect('/')
 
 
 @app.route("/get-boards")
@@ -29,15 +61,6 @@ def get_boards():
     return data_handler.get_boards()
 
 
-@app.route("/get-statuses")
-@json_response
-def get_statuses():
-    """
-    All the boards
-    """
-    return data_handler.get_statuses()
-
-
 @app.route("/get-cards/<int:board_id>")
 @json_response
 def get_cards_for_board(board_id: int):
@@ -46,20 +69,6 @@ def get_cards_for_board(board_id: int):
     :param board_id: id of the parent board
     """
     return data_handler.get_cards_for_board(board_id)
-
-
-@app.route('/save-board', methods=['GET', 'POST'])
-def save_board():
-
-    req = request.get_json()
-    data_handler.add_new_board(req)
-
-@app.route("/api/<table_name>/insert", methods=["POST"])
-def save_record(table_name):
-    record_to_save = request.form.to_dict()
-
-
-
 
 
 def main():

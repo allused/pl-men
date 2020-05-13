@@ -1,4 +1,13 @@
 {% extends 'layout.html' %}
 {% block content %}
-    
+    <div class="login">
+        <form method="post" name="login-details">
+            <input name="username" placeholder="Your Username">
+            <input type="password" name="password" placeholder="Your password">
+            <button type="submit">Go</button>
+        </form>
+    </div>
+    <div id="registration-link">
+        <a href="{{ url_for('register') }}">Click here to register.</a>
+    </div>
 {% endblock %}

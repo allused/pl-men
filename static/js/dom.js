@@ -171,6 +171,7 @@ export let dom = {
     renameTitle: function (oldName) {
         let newName = prompt('Set new name to board:');
         dataHandler.setNewBoardTitle(oldName, newName, dataHandler._api_post);
+        return newName
     },
 
     renameBoardListener: function () {
@@ -178,7 +179,7 @@ export let dom = {
         for (let bname of boardNames) {
             bname.addEventListener('click', (event) => {
             let oldName = bname.innerText;
-            dom.renameTitle(oldName);
+            bname.innerText = dom.renameTitle(oldName);
         })
         }
     }

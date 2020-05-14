@@ -12,11 +12,13 @@ export let dom = {
 
         dataHandler.getBoards(function (boards) {
             dataHandler.getStatuses(function (statuses) {
-                dom.showBoards(statuses, boards);
+                dataHandler.getCards(function (cards) {
+                    dom.showBoards(statuses, boards, cards);
+                });
             });
         });
     },
-    showBoards: function (statuses, boards) {
+    showBoards: function (statuses, boards, cards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
 
@@ -44,7 +46,7 @@ export let dom = {
         let boardSection = ''
         for (let i = 0; i < boards.length; i++) {
             boardSection += (`
-                <section class="board">
+                <section class="board" id="${boards[i].id}">
                     <div class="board-header">
                         <span class="board-title">
                             ${boards[i].title}
@@ -66,27 +68,22 @@ export let dom = {
             boardsContainer.innerHTML = boardContainer
         }
         this.addCardListener();
-    }
-    ,
-    loadCardsById: function (boardId) {
-
-    },
-    loadCards: function(board_id){
-        dataHandler.getCards(function (cards) {
-            dom.showCards(cards, board_id);
-        })
-    },
-    showCards: function(cards, board_id){
-        let title = cards.title;
-
-        const card = `<div class="card">
-                            <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                            <div class="card-title">${title}</div>
-                        </div>`
-        for (let i = 0; i < cards.length; i++) {
-            if (board_id == cards[i].board_id){
-                return card
-        }}
+        for (let i = 0; i < boards.length; i++){
+            for (let j = 0; j < statuses.length; j++){
+                for (let k = 0; k < cards.length; k++){
+                    if (cards[k].board_id === boards[i].id && cards[k].status_id === j){
+                        document.getElementsByClassName('board')[i]
+                            .getElementsByClassName('board-column-content')[j].innerHTML += `
+                                <div class="card">
+                                    <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                                    <div class="card-title">
+                                         ${cards[k].title}
+                                    </div>
+                                </div>`
+                    }
+                }
+            }
+        }
     },
 
 

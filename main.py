@@ -68,7 +68,8 @@ def get_cards_for_board(board_id: int):
     All cards that belongs to a board
     :param board_id: id of the parent board
     """
-    return data_handler.get_cards_for_board(board_id)\
+    return data_handler.get_cards_for_board(board_id)
+
 
 @app.route("/get-statuses")
 @json_response
@@ -79,10 +80,8 @@ def get_statuses():
     return data_handler.get_statuses()
 
 
-
 @app.route('/save-board', methods=['GET', 'POST'])
 def save_board():
-
     req = request.get_json()
     data_handler.add_new_board(req)
 
@@ -90,17 +89,30 @@ def save_board():
 
     return res
 
+
 @app.route('/save-card', methods=['POST', 'GET'])
 def save_card():
-
     req = request.get_json()
-    
+    """
+    req catch the fetch POST from data_handler js with the card details
+    in this case req is a dict
+    """
+
+    board_title = req['boardtitle']
+    card_title = req['cardtitle']
+    card_status_id = req['statusid']
+    board_id = data_handler.get_board_id_by_title(board_title)['id']
+
+    data_handler.insert_new_card(board_id, card_title, card_status_id)
 
     response = 'everything ok'
     res = make_response(jsonify(response), 200)
+    """
+    return a response to the server, that everything was ok, so we dont get 
+    internal server error / 500
+    """
 
     return res
-
 
 
 def main():

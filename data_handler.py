@@ -25,6 +25,13 @@ def get_boards():
     return persistence.get_table_data(table="boards")
 
 
+def get_board_id_by_title(title):
+    """
+    Return the board id by the board title
+    """
+    return persistence.get_board_id_by_title(title)
+
+
 def get_cards_for_board(board_id):
     # persistence.clear_cache()
     # all_cards = persistence.get_cards()
@@ -55,3 +62,7 @@ def save_user_data(user_data):
 
 def add_new_board(title):
     return persistence.save_new_board(title)
+
+
+def insert_new_card(board_id, title, status_id):
+    return persistence.insert_new_card(title, status_id, board_id)

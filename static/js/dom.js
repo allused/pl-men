@@ -90,6 +90,8 @@ export let dom = {
     },
 
     cardsDragDrop: function(){
+        let card;
+
         let empties = document.querySelectorAll('.board-column-content');
         let dragged = document.querySelectorAll('.card');
 
@@ -107,34 +109,26 @@ export let dom = {
                 }
 
         function dragStart(event) {
-            console.log('start');
-            let card = this;
+            card = event.toElement.parentNode;
 
-            return card
 
 
         }
         function dragEnd() {
-            console.log('end');
         }
         function dragOver(e) {
-            console.log('over');
             e.preventDefault();
 
         }
         function dragEnter() {
-            console.log('enter');
         }
         function dragLeave() {
-            console.log('leave');
 
         }
         function dragDrop(event) {
-            let card = dragStart();
+            event.target.insertAdjacentElement('beforeend', card)
 
-            console.log(card);
-            event.target.insertAdjacentElement();
-            console.log(event.target);
+
         }
 
 

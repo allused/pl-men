@@ -142,6 +142,16 @@ def get_board_id_by_title(cursor, title):
 
 
 @database_common.connection_handler
+def get_cards(cursor):
+    query = """
+        SELECT * 
+        FROM cards
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def insert_new_card(cursor, title, status_id, board_id):
     query = """
         INSERT INTO cards (board_id,title,status_id)

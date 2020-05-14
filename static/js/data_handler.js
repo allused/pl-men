@@ -57,10 +57,18 @@ export let dataHandler = {
         // the status is retrieved and then the callback function is called with the status
     },
     getCardsByBoardId: function (boardId, callback) {
-        // the cards are retrieved and then the callback function is called with the cards
+
+        this._api_get(`/get-cards/${board_id}`)
     },
     getCard: function (cardId, callback) {
         // the card is retrieved and then the callback function is called with the card
+    },
+    getCards: function(callback) {
+        this._api_get('/get-cards', (response) => {
+            this._data = response;
+
+            callback(response);
+        })
     },
     createNewBoard: function (boardTitle) {
         this._api_post('http://127.0.0.1:5000/save-board', boardTitle);

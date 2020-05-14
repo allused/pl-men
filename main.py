@@ -80,6 +80,16 @@ def get_statuses():
     return data_handler.get_statuses()
 
 
+@app.route("/get-cards")
+@json_response
+def get_cards():
+    """
+    Return cards with all the card details
+    """
+    return data_handler.get_cards()
+
+
+
 @app.route('/save-board', methods=['GET', 'POST'])
 def save_board():
     req = request.get_json()

@@ -30,7 +30,7 @@ export let dom = {
                     <div  class="board-column-content" id="${id}"></div>
                 </div>
             `);
-            id+=1;
+            id += 1;
         }
 
         const boardColumns = (`
@@ -70,11 +70,7 @@ export let dom = {
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
     },
-    showCards: function (cards) {
-        // shows the cards of a board
-        // it adds necessary event listeners also
-    },
-    // here comes more features
+
 
     showBoard: function (title) {
         let boardsContainer = document.querySelector('#boards');
@@ -86,13 +82,12 @@ export let dom = {
         dataHandler.createNewBoard(title, dataHandler._api_post, dom.createBoard(title));
         this.returnTitle(title)
     },
-    returnTitle: function(title){
+    returnTitle: function (title) {
         return title
     },
 
 
     createBoard: function (title) {
-
 
 
         const boardHead = `<div class="board-header"><span class="board-title">${title}</span>
@@ -131,20 +126,18 @@ export let dom = {
     },
     newCard: function (title) {
 
-        const card = `<div class="card">
+        return `<div class="card">
                             <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                             <div class="card-title">${title}</div>
                         </div>`
-        return card
 
     },
     addCardListener: function () {
         let cards = document.getElementsByClassName('board-add')
-        for (let card of cards){
-            card.addEventListener('click', (event)=>{
-                let targetElement = event.target.parentNode.parentNode.childNodes[3];
-                console.log(targetElement)
-
+        for (let card of cards) {
+            card.addEventListener('click', (event) => {
+                let targetElement = event.target.parentNode.parentNode.childNodes[3].childNodes[1].childNodes[3];
+                targetElement.innerHTML += this.newCard();
 
             })
         }

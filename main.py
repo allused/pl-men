@@ -89,7 +89,6 @@ def get_cards():
     return data_handler.get_cards()
 
 
-
 @app.route('/save-board', methods=['GET', 'POST'])
 def save_board():
     req = request.get_json()
@@ -97,6 +96,14 @@ def save_board():
 
     res = make_response(jsonify(req), 200)
 
+    return res
+
+
+@app.route('/rename-board', methods=['GET', 'POST'])
+def rename_board():
+    req = request.get_json()
+    data_handler.rename('boards', req['old_title'], req['new_title'])
+    res = make_response(jsonify(req), 200)
     return res
 
 

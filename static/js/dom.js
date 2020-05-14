@@ -170,8 +170,12 @@ export let dom = {
 
     renameTitle: function (oldName) {
         let newName = prompt('Set new name to board:');
-        dataHandler.setNewBoardTitle(oldName, newName, dataHandler._api_post);
-        return newName
+        if (newName == '') {
+            return oldName
+        } else {
+            dataHandler.setNewBoardTitle(oldName, newName, dataHandler._api_post);
+            return newName
+        }
     },
 
     renameBoardListener: function () {

@@ -62,11 +62,11 @@ export let dataHandler = {
     getCard: function (cardId, callback) {
         // the card is retrieved and then the callback function is called with the card
     },
-    createNewBoard: function (boardTitle, callback) {
-        this._api_post('http://127.0.0.1:5000/save-board', boardTitle, callback);
+    createNewBoard: function (boardTitle) {
+        this._api_post('http://127.0.0.1:5000/save-board', boardTitle);
     },
     createNewCard: function (cardTitle, boardId, statusId, callback) {
-        // creates new card, saves it and calls the callback function with its data
+        this._api_post()
     }
     // here comes more features
 };

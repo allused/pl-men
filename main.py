@@ -71,6 +71,20 @@ def get_cards_for_board(board_id: int):
     return data_handler.get_cards_for_board(board_id)
 
 
+
+@app.route('/save-board', methods=['GET', 'POST'])
+def save_board():
+
+    req = request.get_json()
+    data_handler.add_new_board(req)
+
+    res = make_response(jsonify(req), 200)
+
+    return res
+
+
+
+
 def main():
     app.run(debug=True)
 

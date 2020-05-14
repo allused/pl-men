@@ -4,11 +4,12 @@ import {dataHandler} from "./data_handler.js";
 export let dom = {
     init: function () {
         dom.newBoardButton();
+        dom.addCardListener();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
 
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dataHandler.getStatuses(function (statuses) {
                 dom.showBoards(statuses, boards);
             });
@@ -19,16 +20,17 @@ export let dom = {
         // it adds necessary event listeners also
 
         let cols = '';
-
+        let id = 0;
         for (let i = 0; i < statuses.length; i++) {
             cols += (`
                 <div class="board-column">
                     <div class="board-column-title">
                         ${statuses[i].title}
                     </div>
-                    <div class="board-column-content"></div>
+                    <div  class="board-column-content" id="${id}"></div>
                 </div>
             `);
+            id+=1;
         }
 
         const boardColumns = (`
@@ -62,38 +64,43 @@ export let dom = {
             let boardsContainer = document.querySelector('#boards');
             boardsContainer.innerHTML = boardContainer
         }
+        this.addCardListener();
+    }
+    ,
+    loadCards: function (boardId) {
+        // retrieves cards and makes showCards called
+    },
+    showCards: function (cards) {
+        // shows the cards of a board
+        // it adds necessary event listeners also
+    },
+    // here comes more features
 
-        }
-        ,
-        loadCards: function (boardId) {
-            // retrieves cards and makes showCards called
-        },
-        showCards: function (cards) {
-            // shows the cards of a board
-            // it adds necessary event listeners also
-        },
-        // here comes more features
-  
-    showBoard: function(title){
+    showBoard: function (title) {
         let boardsContainer = document.querySelector('#boards');
 
 
     },
     getTitle: function () {
-        let title =  prompt('Enter the new board title:');
-        dataHandler.createNewBoard(title, dataHandler._api_post,dom.createBoard(title));
+        let title = prompt('Enter the new board title:');
+        dataHandler.createNewBoard(title, dataHandler._api_post, dom.createBoard(title));
+        this.returnTitle(title)
+    },
+    returnTitle: function(title){
+        return title
     },
 
 
-    createBoard: function(title){
+    createBoard: function (title) {
+
 
 
         const boardHead = `<div class="board-header"><span class="board-title">${title}</span>
-                            <button class="board-add">Add Card</button><button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
+                            <button  class="board-add">Add Card</button><button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
                             </div>`;
 
-        const columnNew = `<div class="board-column-title">New</div>
-                                <div class="board-column-content"></div>`;
+        const columnNew = `<div  class="board-column-title">New</div>
+                                <div  class="board-column-content" id="${this.returnId()}"></div>`;
 
         const columnInProg = `<div class="board-column-title">In Progress</div>
                                 <div class="board-column-content"></div>`;
@@ -109,7 +116,7 @@ export let dom = {
 
         let columToAppend = '';
 
-        for (let column of columnList){
+        for (let column of columnList) {
             columToAppend += `<div class="board-column">${column}</div>`;
         }
         const boardColumns = `<div class="board-columns">${columToAppend}</div>`;
@@ -119,14 +126,28 @@ export let dom = {
         let boardsContainer = document.querySelector('.board-container');
         boardsContainer.insertAdjacentHTML("beforeend", boardSection);
 
+        this.loadBoards()
+
     },
-    newCard: function(title){
+    newCard: function (title) {
 
         const card = `<div class="card">
                             <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                             <div class="card-title">${title}</div>
                         </div>`
+        return card
 
+    },
+    addCardListener: function () {
+        let cards = document.getElementsByClassName('board-add')
+        for (let card of cards){
+            card.addEventListener('click', (event)=>{
+                let targetElement = event.target.parentNode.parentNode.childNodes[3];
+                console.log(targetElement)
+
+
+            })
+        }
 
     },
 

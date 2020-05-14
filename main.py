@@ -47,11 +47,9 @@ def save_board():
     req = request.get_json()
     data_handler.add_new_board(req)
 
-@app.route("/api/<table_name>/insert", methods=["POST"])
-def save_record(table_name):
-    record_to_save = request.form.to_dict()
+    res = make_response(jsonify(req), 200)
 
-
+    return res
 
 
 

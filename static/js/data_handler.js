@@ -28,12 +28,6 @@ export let dataHandler = {
 
         })
     },
-    _saveRecord: function (newRecord, tableName) {
-        // it is not called from outside
-        $.post(`http://0.0.0.0:4000/api/${tableName}/insert`, newRecord, function (data) {
-            let objectOfNewRecord = JSON.parse(data);
-            dataHandler._data[tableName].push(objectOfNewRecord);
-        })},
 
     init: function () {
     },
@@ -48,6 +42,7 @@ export let dataHandler = {
             callback(response);
         });
     },
+
     getBoard: function (boardId, callback) {
         // the board is retrieved and then the callback function is called with the board
     },

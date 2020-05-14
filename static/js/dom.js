@@ -3,7 +3,8 @@ import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
-        dom.newBoardButton();
+
+        this.newBoardButton()
         dom.addCardListener();
     },
     loadBoards: function () {
@@ -77,11 +78,7 @@ export let dom = {
 
 
     },
-    getTitle: function () {
-        let title = prompt('Enter the new board title:');
-        dataHandler.createNewBoard(title, dataHandler._api_post, dom.createBoard(title));
-        this.returnTitle(title)
-    },
+
     returnTitle: function (title) {
         return title
     },
@@ -95,7 +92,7 @@ export let dom = {
                             </div>`;
 
         const columnNew = `<div  class="board-column-title">New</div>
-                                <div  class="board-column-content" id="${this.returnId()}"></div>`;
+                                <div  class="board-column-content" ></div>`;
 
         const columnInProg = `<div class="board-column-title">In Progress</div>
                                 <div class="board-column-content"></div>`;
@@ -124,11 +121,11 @@ export let dom = {
         this.loadBoards()
 
     },
-    newCard: function (title) {
+    newCard: function () {
 
         return `<div class="card">
                             <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                            <div class="card-title">${title}</div>
+                            <div class="card-title">name me</div>
                         </div>`
 
     },
@@ -138,12 +135,16 @@ export let dom = {
             card.addEventListener('click', (event) => {
                 let targetElement = event.target.parentNode.parentNode.childNodes[3].childNodes[1].childNodes[3];
                 targetElement.innerHTML += this.newCard();
-
             })
         }
-
     },
 
+    getTitle: function () {
+        let title = prompt('Enter the new board title:');
+        dataHandler.createNewBoard(title, dataHandler._api_post );
+        dom.createBoard(title);
+
+    },
 
     newBoardButton: function () {
         let newBoardBt = document.getElementById('new-board');

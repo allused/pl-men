@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, session, redirect
+from flask import Flask, render_template, url_for, request, session, redirect, make_response, jsonify
 from util import json_response
 import util
 
@@ -30,7 +30,7 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/login', methods='POST', 'GET')
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         login_details = {
@@ -68,7 +68,15 @@ def get_cards_for_board(board_id: int):
     All cards that belongs to a board
     :param board_id: id of the parent board
     """
-    return data_handler.get_cards_for_board(board_id)
+    return data_handler.get_cards_for_board(board_id)\
+
+@app.route("/get-statuses")
+@json_response
+def get_statuses():
+    """
+    Get statuses title
+    """
+    return data_handler.get_statuses()
 
 
 
@@ -81,6 +89,10 @@ def save_board():
     res = make_response(jsonify(req), 200)
 
     return res
+
+@app.route('/save-card', methods=['POST', 'GET'])
+def save_card():
+    pass
 
 
 

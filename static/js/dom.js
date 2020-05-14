@@ -6,30 +6,40 @@ export let dom = {
 
         this.newBoardButton();
         dom.addCardListener();
+        dom.renameBoardListener();
         dom.cardsDragDrop();
+
+
+        this.newBoardButton();
+        dom.addCardListener();
+        
+
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
 
         dataHandler.getBoards(function (boards) {
             dataHandler.getStatuses(function (statuses) {
-                dom.showBoards(statuses, boards);
+                dataHandler.getCards(function (cards) {
+                    dom.showBoards(statuses, boards, cards);
+                });
             });
         });
     },
-    showBoards: function (statuses, boards) {
+    showBoards: function (statuses, boards, cards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
 
         let cols = '';
-        let id = 0;
         for (let i = 0; i < statuses.length; i++) {
             cols += (`
                 <div class="board-column">
                     <div class="board-column-title">
                         ${statuses[i].title}
                     </div>
+
                     <div  class="board-column-content" ></div>
+
                 </div>
             `);
         }
@@ -44,7 +54,7 @@ export let dom = {
         let boardSection = ''
         for (let i = 0; i < boards.length; i++) {
             boardSection += (`
-                <section class="board">
+                <section class="board" id="${boards[i].id}">
                     <div class="board-header">
                         <span class="board-title">
                             ${boards[i].title}
@@ -66,27 +76,28 @@ export let dom = {
             boardsContainer.innerHTML = boardContainer
         }
         this.addCardListener();
-    }
-    ,
+      
+        for (let i = 0; i < boards.length; i++){
+            for (let j = 0; j < statuses.length; j++){
+                for (let k = 0; k < cards.length; k++){
+                    if (cards[k].board_id === boards[i].id && cards[k].status_id === j){
+                        document.getElementsByClassName('board')[i]
+                            .getElementsByClassName('board-column-content')[j].innerHTML += `
+                                <div class="card">
+                                    <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                                    <div class="card-title">
+                                         ${cards[k].title}
+                                    </div>
+                                </div>`
+                    }
+                }
+            }
+        }
+        this.renameBoardListener();
+    },
+  
     loadCardsById: function (boardId) {
 
-    },
-    loadCards: function(board_id){
-        dataHandler.getCards(function (cards) {
-            dom.showCards(cards, board_id);
-        })
-    },
-    showCards: function(cards, board_id){
-        let title = cards.title;
-
-        const card = `<div class="card">
-                            <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                            <div class="card-title">${title}</div>
-                        </div>`
-        for (let i = 0; i < cards.length; i++) {
-            if (board_id == cards[i].board_id){
-                return card
-        }}
     },
 
     cardsDragDrop: function(){
@@ -220,4 +231,26 @@ export let dom = {
         let newBoardBt = document.getElementById('new-board');
         newBoardBt.addEventListener('click', dom.getTitle);
     },
+
+
+    renameTitle: function (oldName) {
+        let newName = prompt('Set new name to board:');
+        if (newName == '') {
+            return oldName
+        } else {
+            dataHandler.setNewBoardTitle(oldName, newName, dataHandler._api_post);
+            return newName
+        }
+    },
+
+    renameBoardListener: function () {
+        let boardNames = document.getElementsByClassName('board-title');
+        for (let bname of boardNames) {
+            bname.addEventListener('click', (event) => {
+            let oldName = bname.innerText;
+            bname.innerText = dom.renameTitle(oldName);
+        })
+        }
+    }
+
 };

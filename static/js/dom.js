@@ -3,9 +3,17 @@ import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
+
         this.newBoardButton();
         dom.addCardListener();
         dom.renameBoardListener();
+        dom.cardsDragDrop();
+
+
+        this.newBoardButton();
+        dom.addCardListener();
+        
+
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -29,7 +37,9 @@ export let dom = {
                     <div class="board-column-title">
                         ${statuses[i].title}
                     </div>
-                    <div  class="board-column-content"></div>
+
+                    <div  class="board-column-content" ></div>
+
                 </div>
             `);
         }
@@ -90,6 +100,55 @@ export let dom = {
 
     },
 
+    cardsDragDrop: function(){
+        let card;
+
+        let empties = document.querySelectorAll('.board-column-content');
+        let dragged = document.querySelectorAll('.card');
+
+        for(let drag of dragged){
+            drag.addEventListener('dragstart', dragStart);
+            drag.addEventListener('dragend', dragEnd);
+        }
+
+
+        for (let empty of empties){
+                empty.addEventListener('dragover', dragOver);
+                empty.addEventListener('dragenter', dragEnter);
+                empty.addEventListener('dragleave', dragLeave);
+                empty.addEventListener('drop', dragDrop);
+                }
+
+        function dragStart(event) {
+            card = event.toElement.parentNode;
+
+
+
+        }
+        function dragEnd() {
+        }
+        function dragOver(e) {
+            e.preventDefault();
+
+        }
+        function dragEnter() {
+        }
+        function dragLeave() {
+
+        }
+        function dragDrop(event) {
+            event.target.insertAdjacentElement('beforeend', card)
+
+
+        }
+
+
+
+
+
+
+
+    },
 
     showBoard: function (title) {
         let boardsContainer = document.querySelector('#boards');
@@ -122,14 +181,14 @@ export let dom = {
                             <div class="board-column-content"></div>`;
 
 
-        let columnList = [columnNew, columnInProg, columnTesting, columnDone];
+        const columnList = [columnNew, columnInProg, columnTesting, columnDone];
 
-        let columToAppend = '';
+        let columnToAppend = '';
 
         for (let column of columnList) {
-            columToAppend += `<div class="board-column">${column}</div>`;
+            columnToAppend += `<div class="board-column">${column}</div>`;
         }
-        const boardColumns = `<div class="board-columns">${columToAppend}</div>`;
+        const boardColumns = `<div class="board-columns">${columnToAppend}</div>`;
 
         const boardSection = `<section class="board">${boardHead}${boardColumns}</section>`;
 
@@ -142,7 +201,7 @@ export let dom = {
 
         return `<div class="card">
                             <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                            <div class="card-title">name me</div>
+                            <div class="card-title" draggable="true">name me</div>
                         </div>`
 
     },
@@ -153,15 +212,18 @@ export let dom = {
                 let boardTitle = event.target.parentNode.parentNode.childNodes[1].childNodes[1].innerText;
                 let targetElement = event.target.parentNode.parentNode.childNodes[3].childNodes[1].childNodes[3];
                 targetElement.innerHTML += this.newCard();
-                dataHandler.createNewCard(boardTitle)
+                dom.cardsDragDrop();
+                dataHandler.createNewCard(boardTitle);
             })
         }
     },
 
     getTitle: function () {
         let title = prompt('Enter the new board title:');
-        dataHandler.createNewBoard(title, dataHandler._api_post );
-        dom.createBoard(title);
+        if (title !== 'null'){
+            dataHandler.createNewBoard(title, dataHandler._api_post );
+            dom.createBoard(title);
+        }
 
     },
 

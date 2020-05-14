@@ -65,8 +65,14 @@ export let dataHandler = {
     createNewBoard: function (boardTitle) {
         this._api_post('http://127.0.0.1:5000/save-board', boardTitle);
     },
-    createNewCard: function (cardTitle, boardId, statusId, callback) {
-        this._api_post()
-    }
+    createNewCard: function ( boardTitle, cardTitle='name me', statusId=0) {
+        let cardData = {
+            'cardtitle':cardTitle,
+            'boardtitle':boardTitle,
+            'statusid':statusId,
+            }
+
+        this._api_post('http://127.0.0.1:5000/save-card', cardData)
     // here comes more features
+    }
 };

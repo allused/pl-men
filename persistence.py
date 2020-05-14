@@ -65,6 +65,7 @@ def get_table_data(cursor: RealDictCursor, table):
     table_data = cursor.fetchall()
     return table_data
 
+
 @database_common.connection_handler
 def get_status(cursor):
     query = """
@@ -118,6 +119,7 @@ def save_new_board(cursor, title):
         """
     cursor.execute(query, {'title': title})
 
+
 @database_common.connection_handler
 def delete_board(cursor, id):
     query = """
@@ -125,5 +127,34 @@ def delete_board(cursor, id):
         FROM boards
         WHERE id = %(id)s;
         """
-    cursor.execute(query, {'id':id})
+    cursor.execute(query, {'id': id})
 
+
+@database_common.connection_handler
+def get_board_id_by_title(cursor, title):
+    query = """
+        SELECT id
+        FROM boards
+        WHERE title = %(title)s;
+        """
+    cursor.execute(query, {'title': title})
+    return cursor.fetchone()
+
+
+@database_common.connection_handler
+def get_cards(cursor):
+    query = """
+        SELECT * 
+        FROM cards
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def insert_new_card(cursor, title, status_id, board_id):
+    query = """
+        INSERT INTO cards (board_id,title,status_id)
+        VALUES (%(board_id)s, %(title)s, %(status_id)s);
+        """
+    cursor.execute(query, {'board_id': board_id, 'title': title, 'status_id': status_id})

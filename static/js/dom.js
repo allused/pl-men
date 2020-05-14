@@ -68,8 +68,25 @@ export let dom = {
         this.addCardListener();
     }
     ,
-    loadCards: function (boardId) {
-        // retrieves cards and makes showCards called
+    loadCardsById: function (boardId) {
+
+    },
+    loadCards: function(board_id){
+        dataHandler.getCards(function (cards) {
+            dom.showCards(cards, board_id);
+        })
+    },
+    showCards: function(cards, board_id){
+        let title = cards.title;
+
+        const card = `<div class="card">
+                            <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                            <div class="card-title">${title}</div>
+                        </div>`
+        for (let i = 0; i < cards.length; i++) {
+            if (board_id == cards[i].board_id){
+                return card
+        }}
     },
 
 

@@ -43,15 +43,13 @@ def get_cards_for_board(board_id):
             matching_cards.append(card)
     return matching_cards
 
+
 def get_cards():
     return persistence.get_cards()
 
+
 def create_card(board_id, title):
     return persistence.create_card(board_id, title)
-
-
-def rename(table, _id, title):
-    persistence.rename(table, _id, title)
 
 
 def get_user_by_name(username):
@@ -68,3 +66,12 @@ def add_new_board(title):
 
 def insert_new_card(board_id, title, status_id):
     return persistence.insert_new_card(title, status_id, board_id)
+
+
+def get_id(table, title):
+    return persistence.get_board_id_by_title(table, title)
+
+
+def rename(table, old_title, new_title):
+    _id = persistence.get_board_id_by_title(old_title)
+    persistence.rename(table, _id['id'], new_title)

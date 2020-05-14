@@ -60,7 +60,8 @@ from psycopg2 import sql
 def get_table_data(cursor: RealDictCursor, table):
     query = f"""
         SELECT * 
-        FROM {table};"""
+        FROM {table}
+        ORDER BY id;"""
     cursor.execute(query)
     table_data = cursor.fetchall()
     return table_data
@@ -86,11 +87,12 @@ def create_card(cursor, board_id, title):
 
 @database_common.connection_handler
 def rename(cursor, table, _id, new_title):
-    cursor.execute(f"""
+    query = f"""
     UPDATE {table}
     SET title = %(new_title)s
     WHERE id = %(_id)s;
-    """, {'_id': _id, 'new_title': new_title})
+    """
+    cursor.execute(query, {'_id': _id, 'new_title': new_title})
 
 
 @database_common.connection_handler
@@ -158,3 +160,13 @@ def insert_new_card(cursor, title, status_id, board_id):
         VALUES (%(board_id)s, %(title)s, %(status_id)s);
         """
     cursor.execute(query, {'board_id': board_id, 'title': title, 'status_id': status_id})
+
+
+@database_common.connection_handler
+def get_id_by_title(cursor, table, title):
+    cursor.execute(f"""
+        SELECT id
+        FROM {table}
+        WHERE title=%(title)s
+    """, {'title': title})
+    return cursor.fetchone()

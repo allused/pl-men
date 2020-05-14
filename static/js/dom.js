@@ -3,9 +3,9 @@ import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
-
-        this.newBoardButton()
+        this.newBoardButton();
         dom.addCardListener();
+        dom.renameBoardListener();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -23,17 +23,15 @@ export let dom = {
         // it adds necessary event listeners also
 
         let cols = '';
-        let id = 0;
         for (let i = 0; i < statuses.length; i++) {
             cols += (`
                 <div class="board-column">
                     <div class="board-column-title">
                         ${statuses[i].title}
                     </div>
-                    <div  class="board-column-content" id="${id}"></div>
+                    <div  class="board-column-content"></div>
                 </div>
             `);
-            id += 1;
         }
 
         const boardColumns = (`
@@ -68,6 +66,7 @@ export let dom = {
             boardsContainer.innerHTML = boardContainer
         }
         this.addCardListener();
+      
         for (let i = 0; i < boards.length; i++){
             for (let j = 0; j < statuses.length; j++){
                 for (let k = 0; k < cards.length; k++){
@@ -84,6 +83,11 @@ export let dom = {
                 }
             }
         }
+        this.renameBoardListener();
+    },
+  
+    loadCardsById: function (boardId) {
+
     },
 
 
@@ -165,4 +169,26 @@ export let dom = {
         let newBoardBt = document.getElementById('new-board');
         newBoardBt.addEventListener('click', dom.getTitle);
     },
+
+
+    renameTitle: function (oldName) {
+        let newName = prompt('Set new name to board:');
+        if (newName == '') {
+            return oldName
+        } else {
+            dataHandler.setNewBoardTitle(oldName, newName, dataHandler._api_post);
+            return newName
+        }
+    },
+
+    renameBoardListener: function () {
+        let boardNames = document.getElementsByClassName('board-title');
+        for (let bname of boardNames) {
+            bname.addEventListener('click', (event) => {
+            let oldName = bname.innerText;
+            bname.innerText = dom.renameTitle(oldName);
+        })
+        }
+    }
+
 };

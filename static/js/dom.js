@@ -118,7 +118,6 @@ export let dom = {
         let boardsContainer = document.querySelector('.board-container');
         boardsContainer.insertAdjacentHTML("beforeend", boardSection);
 
-        this.loadBoards()
 
     },
     newCard: function () {
@@ -133,8 +132,10 @@ export let dom = {
         let cards = document.getElementsByClassName('board-add')
         for (let card of cards) {
             card.addEventListener('click', (event) => {
+                let boardTitle = event.target.parentNode.parentNode.childNodes[1].childNodes[1].innerText;
                 let targetElement = event.target.parentNode.parentNode.childNodes[3].childNodes[1].childNodes[3];
                 targetElement.innerHTML += this.newCard();
+                dataHandler.createNewCard(boardTitle)
             })
         }
     },

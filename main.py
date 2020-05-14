@@ -92,8 +92,14 @@ def save_board():
 
 @app.route('/save-card', methods=['POST', 'GET'])
 def save_card():
-    pass
 
+    req = request.get_json()
+    
+
+    response = 'everything ok'
+    res = make_response(jsonify(response), 200)
+
+    return res
 
 
 

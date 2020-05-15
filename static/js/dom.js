@@ -236,7 +236,7 @@ export let dom = {
 
     renameTitle: function (oldName) {
         let newName = prompt('Set new name to board:');
-        if (newName == '') {
+        if (newName === null) {
             return oldName
         } else {
             dataHandler.setNewBoardTitle(oldName, newName, dataHandler._api_post);

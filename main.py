@@ -107,6 +107,14 @@ def rename_board():
     return res
 
 
+@app.route('/rename-card', methods=['GET', 'POST'])
+def rename_card():
+    req = request.get_json()
+    data_handler.rename('cards', req['old_title'], req['new_title'])
+    res = make_response(jsonify(req), 200)
+    return res
+
+
 @app.route('/save-card', methods=['POST', 'GET'])
 def save_card():
     req = request.get_json()

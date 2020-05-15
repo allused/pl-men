@@ -75,11 +75,13 @@ export let dom = {
                             .getElementsByClassName('board-column-content')[j].innerHTML += `
                                 <div class="card">
                                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                                    <div class="card-title">
+                                    <span class="card-title">
                                          ${cards[k].title}
-                                    </div>
-                                </div>`
+                                    </span>
+                                </div>`;
                     }
+                    //TODO wtf wtf wtf wtf
+                    // this.renameCardsListener();
                 }
             }
         }
@@ -170,9 +172,18 @@ export let dom = {
         newBoardBt.addEventListener('click', dom.getTitle);
     },
 
+    renameCard: function (oldName) {
+        let newName = prompt(`Set new name to card ${oldName}:`);
+        if (newName == '') {
+            return oldName
+        } else {
+            dataHandler.setNewCardTitle(oldName, newName, dataHandler._api_post);
+            return newName
+        }
+    },
 
     renameTitle: function (oldName) {
-        let newName = prompt('Set new name to board:');
+        let newName = prompt(`Set new name to board ${oldName}:`);
         if (newName == '') {
             return oldName
         } else {
@@ -184,10 +195,20 @@ export let dom = {
     renameBoardListener: function () {
         let boardNames = document.getElementsByClassName('board-title');
         for (let bname of boardNames) {
-            bname.addEventListener('click', (event) => {
+            bname.addEventListener('dblclick', (event) => {
             let oldName = bname.innerText;
             bname.innerText = dom.renameTitle(oldName);
-        })
+            })
+        }
+    },
+
+    renameCardsListener: function () {
+        let cardNames = document.getElementsByClassName('card-title');
+        for (let card of cardNames) {
+            card.addEventListener('dblclick', (event) => {
+            let oldName = card.innerText;
+            card.innerText = dom.renameCard(oldName);
+            })
         }
     }
 

@@ -89,6 +89,13 @@ def get_cards():
     return data_handler.get_cards()
 
 
+@app.route("/get_last_card_id")
+@json_response
+def get_last_card_id():
+
+    pass
+
+
 @app.route('/save-board', methods=['GET', 'POST'])
 def save_board():
     req = request.get_json()

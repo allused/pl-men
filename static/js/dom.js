@@ -10,8 +10,9 @@ export let dom = {
         dom.cardsDragDrop();
 
 
-        this.newBoardButton();
-        dom.addCardListener();
+
+
+
         
 
     },
@@ -101,16 +102,18 @@ export let dom = {
 
     },
 
-    cardsDragDrop: function(){
+    cardsDragDrop: function(drag='null',event){
         let card;
 
-        let empties = document.querySelectorAll('.board-column-content');
         let dragged = document.querySelectorAll('.card');
+        let empties = document.querySelectorAll('.board-column-content');
 
-        for(let drag of dragged){
+        for (let drag of dragged){
+
             drag.addEventListener('dragstart', dragStart);
+            console.log(drag)
             drag.addEventListener('dragend', dragEnd);
-        }
+            }
 
 
         for (let empty of empties){
@@ -123,7 +126,6 @@ export let dom = {
         function dragStart(event) {
 
             card = event.toElement;
-            console.log(card)
 
         }
         function dragEnd() {
@@ -138,9 +140,20 @@ export let dom = {
 
         }
         function dragDrop(event) {
-            event.target.insertAdjacentElement('beforeend', card)
+            console.log(event.target.className)
+            
+            if (event.target.className == 'card'){
+                event.target.parentNode.insertAdjacentElement('beforeend', card);
+
+            } else if (event.target.className == 'card-title'){
+                event.target.parentNode.parentNode.insertAdjacentElement('beforeend', card);
+
+            } else {
+                event.target.insertAdjacentElement('beforeend', card)
+            }
+
             let current_status = event.target.parentNode.childNodes[1].innerText
-            console.log(card.id)
+
             if (current_status == 'new'){
                 card.id = 0;
             } else if (current_status == 'in progress'){
@@ -150,17 +163,7 @@ export let dom = {
             } else if (current_status == 'done'){
                 card.id = 3;
             }
-
-
-
         }
-
-
-
-
-
-
-
     },
 
     showBoard: function (title) {
@@ -172,7 +175,6 @@ export let dom = {
     returnTitle: function (title) {
         return title
     },
-
 
     createBoard: function (title) {
 
@@ -225,8 +227,8 @@ export let dom = {
                 let boardTitle = event.target.parentNode.parentNode.childNodes[1].childNodes[1].innerText;
                 let targetElement = event.target.parentNode.parentNode.childNodes[3].childNodes[1].childNodes[3];
                 targetElement.innerHTML += this.newCard();
-                dom.cardsDragDrop();
                 dataHandler.createNewCard(boardTitle);
+                dom.cardsDragDrop();
             })
         }
     },

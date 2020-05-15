@@ -96,6 +96,7 @@ export let dom = {
         }
         dom.cardsDragDrop();
         this.renameBoardListener();
+        this.closeButtonListener();
     },
   
     loadCardsById: function (boardId) {
@@ -253,7 +254,7 @@ export let dom = {
 
     renameTitle: function (oldName) {
         let newName = prompt('Set new name to board:');
-        if (newName == '') {
+        if (newName === null) {
             return oldName
         } else {
             dataHandler.setNewBoardTitle(oldName, newName, dataHandler._api_post);
@@ -269,6 +270,20 @@ export let dom = {
             bname.innerText = dom.renameTitle(oldName);
         })
         }
-    }
+    },
 
+    closeButtonListener: function () {
+        let closeButtons = document.getElementsByClassName('board-toggle');
+        for (let closeBtn of closeButtons){
+            closeBtn.addEventListener('click', (event) =>{
+                let element = event.target.parentElement.parentElement
+                    .getElementsByClassName('board-columns')[0];
+                if (element.style.display === "none"){
+                    element.style.display = "flex";
+                }else{
+                    element.style.display = "none";
+                }
+            })
+        }
+    }
 };

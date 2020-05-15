@@ -94,6 +94,7 @@ export let dom = {
             }
         }
         this.renameBoardListener();
+        this.closeButtonListener();
     },
   
     loadCardsById: function (boardId) {
@@ -251,6 +252,20 @@ export let dom = {
             bname.innerText = dom.renameTitle(oldName);
         })
         }
-    }
+    },
 
+    closeButtonListener: function () {
+        let closeButtons = document.getElementsByClassName('board-toggle');
+        for (let closeBtn of closeButtons){
+            closeBtn.addEventListener('click', (event) =>{
+                let element = event.target.parentElement.parentElement
+                    .getElementsByClassName('board-columns')[0];
+                if (element.style.display === "none"){
+                    element.style.display = "flex";
+                }else{
+                    element.style.display = "none";
+                }
+            })
+        }
+    }
 };

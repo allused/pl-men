@@ -90,5 +90,13 @@ export let dataHandler = {
            'old_title': oldTitle
        }
         this._api_post('http://127.0.0.1:5000/rename-board', titles)
+    },
+    saveCardStatusById: function (id, status) {
+        let cardDetails = {
+            'id':id,
+            'status':status
+        }
+        this._api_post('/save-card-status', cardDetails)
+
     }
 };

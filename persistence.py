@@ -170,3 +170,13 @@ def get_id_by_title(cursor, table, title):
         WHERE title=%(title)s
     """, {'title': title})
     return cursor.fetchone()
+
+
+@database_common.connection_handler
+def save_card_status_by_id(cursor, card_id, new_status):
+    query = """
+        UPDATE cards
+        SET status_id = %(new_status)s
+        WHERE id = %(card_id)s;
+        """
+    cursor.execute(query, {'card_id':card_id, 'new_status':new_status})

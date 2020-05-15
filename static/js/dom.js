@@ -10,8 +10,9 @@ export let dom = {
         dom.cardsDragDrop();
 
 
-        this.newBoardButton();
-        dom.addCardListener();
+
+
+
         
 
     },
@@ -83,9 +84,9 @@ export let dom = {
                     if (cards[k].board_id === boards[i].id && cards[k].status_id === j){
                         document.getElementsByClassName('board')[i]
                             .getElementsByClassName('board-column-content')[j].innerHTML += `
-                                <div class="card">
+                                <div class="card" draggable="true" >
                                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                                    <div class="card-title">
+                                    <div class="card-title" id="${cards[k].id}">
                                          ${cards[k].title}
                                     </div>
                                 </div>`
@@ -93,6 +94,7 @@ export let dom = {
                 }
             }
         }
+        dom.cardsDragDrop();
         this.renameBoardListener();
         this.closeButtonListener();
     },
@@ -101,16 +103,16 @@ export let dom = {
 
     },
 
-    cardsDragDrop: function(){
+    cardsDragDrop: function(event){
         let card;
 
-        let empties = document.querySelectorAll('.board-column-content');
         let dragged = document.querySelectorAll('.card');
+        let empties = document.querySelectorAll('.board-column-content');
 
-        for(let drag of dragged){
+        for (let drag of dragged){
             drag.addEventListener('dragstart', dragStart);
             drag.addEventListener('dragend', dragEnd);
-        }
+            }
 
 
         for (let empty of empties){
@@ -121,9 +123,8 @@ export let dom = {
                 }
 
         function dragStart(event) {
-            card = event.toElement.parentNode;
 
-
+            card = event.toElement;
 
         }
         function dragEnd() {
@@ -138,17 +139,32 @@ export let dom = {
 
         }
         function dragDrop(event) {
-            event.target.insertAdjacentElement('beforeend', card)
+            console.log(card)
 
+            if (event.target.className == 'card'){
+                event.target.parentNode.insertAdjacentElement('beforeend', card);
 
+            } else if (event.target.className == 'card-title'){
+                event.target.parentNode.parentNode.insertAdjacentElement('beforeend', card);
+
+            } else {
+                event.target.insertAdjacentElement('beforeend', card)
+            }
+
+            let current_status = event.target.parentNode.childNodes[1].innerText
+
+            if (current_status == 'new'){
+                card.id = 0;
+            } else if (current_status == 'in progress'){
+                card.id = 1;
+            } else if (current_status == 'testing'){
+                card.id = 2;
+            } else if (current_status == 'done'){
+                card.id = 3;
+            }
+            let newID = card.childNodes[3].id;
+            dataHandler.saveCardStatusById(newID, card.id);
         }
-
-
-
-
-
-
-
     },
 
     showBoard: function (title) {
@@ -160,7 +176,6 @@ export let dom = {
     returnTitle: function (title) {
         return title
     },
-
 
     createBoard: function (title) {
 
@@ -199,11 +214,12 @@ export let dom = {
 
     },
     newCard: function () {
-
-        return `<div class="card">
+        const card = `<div class="card" draggable="true" id="0">
                             <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                            <div class="card-title" draggable="true">name me</div>
+                            <div class="card-title">name me</div>
                         </div>`
+
+        return card
 
     },
     addCardListener: function () {
@@ -213,10 +229,12 @@ export let dom = {
                 let boardTitle = event.target.parentNode.parentNode.childNodes[1].childNodes[1].innerText;
                 let targetElement = event.target.parentNode.parentNode.childNodes[3].childNodes[1].childNodes[3];
                 targetElement.innerHTML += this.newCard();
-                dom.cardsDragDrop();
                 dataHandler.createNewCard(boardTitle);
+                dom.loadBoards();
             })
+
         }
+
     },
 
     getTitle: function () {

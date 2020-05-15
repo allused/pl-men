@@ -154,18 +154,13 @@ export let dom = {
 
             if (current_status == 'new'){
                 card.id = 0;
-                let newID = card.childNodes[3].id;
             } else if (current_status == 'in progress'){
                 card.id = 1;
-                let newID = card.childNodes[3].id;
             } else if (current_status == 'testing'){
                 card.id = 2;
-                let newID = card.childNodes[3].id;
             } else if (current_status == 'done'){
                 card.id = 3;
-                let newID = card.childNodes[3].id;
             }
-            console.log(card.id)
             let newID = card.childNodes[3].id;
             dataHandler.saveCardStatusById(newID, card.id);
         }

@@ -44,6 +44,11 @@ def get_cards_for_board(board_id):
     return matching_cards
 
 
+def update_card_status(card_id, new_status):
+
+    return persistence.save_card_status_by_id(card_id,new_status)
+
+
 def get_cards():
     return persistence.get_cards()
 

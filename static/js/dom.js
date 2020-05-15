@@ -84,9 +84,9 @@ export let dom = {
                     if (cards[k].board_id === boards[i].id && cards[k].status_id === j){
                         document.getElementsByClassName('board')[i]
                             .getElementsByClassName('board-column-content')[j].innerHTML += `
-                                <div class="card" draggable="true">
+                                <div class="card" draggable="true" >
                                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                                    <div class="card-title" id="${cards[k].status_id}">
+                                    <div class="card-title" id="${cards[k].id}">
                                          ${cards[k].title}
                                     </div>
                                 </div>`
@@ -102,16 +102,14 @@ export let dom = {
 
     },
 
-    cardsDragDrop: function(drag='null',event){
+    cardsDragDrop: function(event){
         let card;
 
         let dragged = document.querySelectorAll('.card');
         let empties = document.querySelectorAll('.board-column-content');
 
         for (let drag of dragged){
-
             drag.addEventListener('dragstart', dragStart);
-            console.log(drag)
             drag.addEventListener('dragend', dragEnd);
             }
 
@@ -140,8 +138,8 @@ export let dom = {
 
         }
         function dragDrop(event) {
-            console.log(event.target.className)
-            
+            console.log(card)
+
             if (event.target.className == 'card'){
                 event.target.parentNode.insertAdjacentElement('beforeend', card);
 
@@ -156,13 +154,20 @@ export let dom = {
 
             if (current_status == 'new'){
                 card.id = 0;
+                let newID = card.childNodes[3].id;
             } else if (current_status == 'in progress'){
                 card.id = 1;
+                let newID = card.childNodes[3].id;
             } else if (current_status == 'testing'){
                 card.id = 2;
+                let newID = card.childNodes[3].id;
             } else if (current_status == 'done'){
                 card.id = 3;
+                let newID = card.childNodes[3].id;
             }
+            console.log(card.id)
+            let newID = card.childNodes[3].id;
+            dataHandler.saveCardStatusById(newID, card.id);
         }
     },
 
@@ -213,11 +218,12 @@ export let dom = {
 
     },
     newCard: function () {
-
-        return `<div class="card" draggable="true" id="0">
+        const card = `<div class="card" draggable="true" id="0">
                             <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                             <div class="card-title">name me</div>
                         </div>`
+
+        return card
 
     },
     addCardListener: function () {
@@ -228,9 +234,11 @@ export let dom = {
                 let targetElement = event.target.parentNode.parentNode.childNodes[3].childNodes[1].childNodes[3];
                 targetElement.innerHTML += this.newCard();
                 dataHandler.createNewCard(boardTitle);
-                dom.cardsDragDrop();
+                dom.loadBoards();
             })
+
         }
+
     },
 
     getTitle: function () {

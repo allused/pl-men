@@ -139,6 +139,17 @@ def save_card():
     return res
 
 
+@app.route('/save-card-status', methods=['POST', 'GET'])
+def save_card_status():
+    req = request.get_json()
+    card_id = req['id']
+    new_status = req['status']
+    data_handler.update_card_status(card_id, new_status)
+
+    res = make_response(jsonify(req), 200)
+
+    return res
+
 def main():
     app.run(debug=True)
 

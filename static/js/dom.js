@@ -122,7 +122,7 @@ export let dom = {
 
         function dragStart(event) {
 
-            card = event.toElement.parentNode;
+            card = event.toElement;
             console.log(card)
 
         }
@@ -139,6 +139,18 @@ export let dom = {
         }
         function dragDrop(event) {
             event.target.insertAdjacentElement('beforeend', card)
+            let current_status = event.target.parentNode.childNodes[1].innerText
+            console.log(card.id)
+            if (current_status == 'new'){
+                card.id = 0;
+            } else if (current_status == 'in progress'){
+                card.id = 1;
+            } else if (current_status == 'testing'){
+                card.id = 2;
+            } else if (current_status == 'done'){
+                card.id = 3;
+            }
+
 
 
         }
@@ -200,9 +212,9 @@ export let dom = {
     },
     newCard: function () {
 
-        return `<div class="card">
+        return `<div class="card" draggable="true" id="0">
                             <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                            <div class="card-title" draggable="true">name me</div>
+                            <div class="card-title">name me</div>
                         </div>`
 
     },

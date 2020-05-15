@@ -83,9 +83,9 @@ export let dom = {
                     if (cards[k].board_id === boards[i].id && cards[k].status_id === j){
                         document.getElementsByClassName('board')[i]
                             .getElementsByClassName('board-column-content')[j].innerHTML += `
-                                <div class="card">
+                                <div class="card" draggable="true">
                                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                                    <div class="card-title">
+                                    <div class="card-title" id="${cards[k].status_id}">
                                          ${cards[k].title}
                                     </div>
                                 </div>`
@@ -93,6 +93,7 @@ export let dom = {
                 }
             }
         }
+        dom.cardsDragDrop();
         this.renameBoardListener();
     },
   
@@ -120,9 +121,9 @@ export let dom = {
                 }
 
         function dragStart(event) {
+
             card = event.toElement.parentNode;
-
-
+            console.log(card)
 
         }
         function dragEnd() {

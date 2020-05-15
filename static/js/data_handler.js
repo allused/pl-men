@@ -87,7 +87,7 @@ export let dataHandler = {
         let titles = {
            'new_title': newTitle,
            'old_title': oldTitle
-       }
+       };
         this._api_post('http://127.0.0.1:5000/rename-card', titles)
     },
 

@@ -81,7 +81,7 @@ export let dom = {
                                 </div>`;
                     }
                     //TODO wtf wtf wtf wtf
-                    // this.renameCardsListener();
+                    this.renameCardsListener();
                 }
             }
         }
@@ -140,11 +140,11 @@ export let dom = {
 
 
     },
-    newCard: function () {
+    newCard: function (cardValue) {
 
         return `<div class="card">
                             <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                            <div class="card-title">name me</div>
+                            <div class="card-title">${cardValue}</div>
                         </div>`
 
     },
@@ -154,8 +154,9 @@ export let dom = {
             card.addEventListener('click', (event) => {
                 let boardTitle = event.target.parentNode.parentNode.childNodes[1].childNodes[1].innerText;
                 let targetElement = event.target.parentNode.parentNode.childNodes[3].childNodes[1].childNodes[3];
-                targetElement.innerHTML += this.newCard();
-                dataHandler.createNewCard(boardTitle)
+                let cardValue = prompt(`Your new card's name: `)
+                targetElement.innerHTML += this.newCard(cardValue);
+                dataHandler.createNewCard(boardTitle, cardValue)
             })
         }
     },

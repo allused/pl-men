@@ -1,4 +1,4 @@
-# Creates a decorator to handle the database connection/cursor opening/closing.
+# Creates a decorator to handle the dPSQatabase connection/cursor opening/closing.
 # Creates the cursor with RealDictCursor, thus it returns real dictionaries, where the column names are the keys.
 import os
 

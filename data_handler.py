@@ -77,6 +77,14 @@ def get_id(table, title):
     return persistence.get_board_id_by_title(table, title)
 
 
+def get_last_id(table):
+    return persistence.get_last_table_id(table)
+
+
 def rename(table, old_title, new_title):
     _id = persistence.get_board_id_by_title(old_title)
     persistence.rename(table, _id['id'], new_title)
+
+
+def rename_card(id, new_name):
+    persistence.rename_card(new_name, id)

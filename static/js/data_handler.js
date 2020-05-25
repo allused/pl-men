@@ -70,6 +70,19 @@ export let dataHandler = {
             callback(response);
         })
     },
+
+
+    getLastId: function(table_name, callback){
+          this._api_get(`/get_${table_name}_id`, (response)=>{
+                this._data = response;
+
+                callback(response);
+
+          })
+
+    },
+
+
     createNewBoard: function (boardTitle) {
         this._api_post('http://127.0.0.1:5000/save-board', boardTitle);
     },
@@ -97,6 +110,15 @@ export let dataHandler = {
             'status':status
         }
         this._api_post('/save-card-status', cardDetails)
+
+    },
+
+    saveCardNameById: function (id, new_name) {
+        let cardDetails = {
+            'id':id,
+            'name':new_name
+        }
+        this._api_post('/save-card-name', cardDetails)
 
     }
 };

@@ -101,6 +101,9 @@ def save_board():
     req = request.get_json()
     data_handler.add_new_board(req)
 
+
+
+
     res = make_response(jsonify(req), 200)
 
     return res
@@ -149,6 +152,27 @@ def save_card_status():
     res = make_response(jsonify(req), 200)
 
     return res
+
+
+@app.route("/get_<table>_id", methods=['GET', 'POST'])
+@json_response
+def get_last_table_id(table):
+
+     return data_handler.get_last_id(table)
+
+
+@app.route('/save-card-name', methods=['GET', 'POST'])
+def save_card_new_name():
+    req = request.get_json()
+
+    new_name = req['name']
+    card_id = int(req['id'])
+    data_handler.rename_card(card_id, new_name)
+
+    res = make_response(jsonify(req), 200)
+
+    return res
+
 
 def main():
     app.run(debug=True)

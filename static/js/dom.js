@@ -6,7 +6,7 @@ export let dom = {
 
         this.newBoardButton();
         dom.addCardListener();
-        dom.testListener();
+
         dom.renameBoardListener();
         dom.cardsDragDrop();
         dataHandler.getLastId('boards', function (id) {
@@ -78,7 +78,6 @@ export let dom = {
             boardsContainer.innerHTML = boardContainer
         }
         this.addCardListener();
-        this.testListener();
 
         for (let i = 0; i < boards.length; i++) {
             for (let j = 0; j < statuses.length; j++) {
@@ -97,7 +96,6 @@ export let dom = {
             }
         }
         dom.cardsDragDrop();
-        dom.testListener();
         dom.renameCard();
         dom.deleteCard();
         this.renameBoardListener();
@@ -149,7 +147,7 @@ export let dom = {
         }
 
         function dragDrop(event) {
-            //console.log(card)
+            let currentStatus;
 
             if (event.target.className == 'card') {
                 event.target.parentNode.insertAdjacentElement('beforeend', card);
@@ -160,20 +158,24 @@ export let dom = {
             } else {
                 event.target.insertAdjacentElement('beforeend', card)
             }
-            let current_status = event.target.parentNode.querySelector('.board-column-title').innerText;
-           
-            if (current_status == 'new') {
+            if (event.target.classList.value.includes('card') == true) {
+                currentStatus = event.target.parentNode.parentNode.parentNode.querySelector('.board-column-title').innerText;
+            } else {
+                currentStatus = event.target.parentNode.querySelector('.board-column-title').innerText;
+            }
+
+
+            if (currentStatus == 'new') {
                 card.id = 0;
-            } else if (current_status == 'in progress') {
+            } else if (currentStatus == 'in progress') {
                 card.id = 1;
-            } else if (current_status == 'testing') {
+            } else if (currentStatus == 'testing') {
                 card.id = 2;
-            } else if (current_status == 'done') {
+            } else if (currentStatus == 'done') {
                 card.id = 3;
             }
 
             let card_id = card.dataset['id'];
-            console.log(card_id, card.id)
             dataHandler.saveCardStatusById(card_id, card.id);
         }
     },
@@ -253,19 +255,6 @@ export let dom = {
     },
 
 
-    testListener: function () {
-        let cards = document.querySelectorAll('.card')
-        for (let card of cards) {
-            card.addEventListener('click', (event) => {
-                if (event.target.classList.value.includes('card-title') == true) {
-                    //console.log(event.target.parentNode)
-
-                }
-                //console.log(event.target.dataset['dbId']);
-            })
-        }
-    },
-
     getTitle: function () {
         let title = prompt('Enter the new board title:');
         if (title !== 'null') {
@@ -320,20 +309,20 @@ export let dom = {
         }
     },
 
-    deleteCard: function(){
+    deleteCard: function () {
         let trashIconElements = document.querySelectorAll('.fa-trash-alt');
         let table;
         let targetElementId;
-        for (let icon of trashIconElements){
-            icon.addEventListener('click', event=>{
+        for (let icon of trashIconElements) {
+            icon.addEventListener('click', event => {
 
-                if (event.target.parentNode.classList.value.includes('card') == true){
-                  targetElementId = event.target.parentNode.parentNode.dataset['id'];
+                if (event.target.parentNode.classList.value.includes('card') == true) {
+                    targetElementId = event.target.parentNode.parentNode.dataset['id'];
                     table = 'cards';
                     dataHandler.deleteTableDataById(table, targetElementId);
                     event.target.parentNode.parentNode.remove();
                     console.log()
-                }else {
+                } else {
                     table = 'boards';
                 }
 

@@ -6,6 +6,8 @@ import data_handler
 
 app = Flask(__name__)
 
+app.secret_key = b'__420blzitfgt__/'
+
 
 @app.route("/")
 def index():
@@ -21,10 +23,9 @@ def register():
         register_details = {
             'username': request.form['username'],
             'password': util.hash_pass(request.form['password']),
-            'verification': util.hash_pass(request.form['verification']),
             'email': request.form['email']
         }
-        if util.verify_password(register_details['password'], register_details['verification']):
+        if request.form['password'] == request.form['verification']:
             data_handler.save_user_data(register_details)
             return redirect('/login')
     return render_template('register.html')
@@ -37,7 +38,7 @@ def login():
             'username': request.form['username'],
             'password': util.hash_pass(request.form['password'])
         }
-        if util.check_login(login_details['username'], login_details['password']):
+        if util.check_login(login_details['username'], request.form['password']):
             user_data = data_handler.get_user_by_name(login_details['username'])
             for key in user_data:
                 session[key] = user_data[key]
@@ -47,7 +48,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    for key in session:
+    for key in [key for key in session]:
         session.pop(key, None)
     return redirect('/')
 
@@ -149,6 +150,7 @@ def save_card_status():
     res = make_response(jsonify(req), 200)
 
     return res
+
 
 def main():
     app.run(debug=True)

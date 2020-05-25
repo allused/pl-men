@@ -211,6 +211,7 @@ export let dom = {
         let boardsContainer = document.querySelector('.board-container');
         boardsContainer.insertAdjacentHTML("beforeend", boardSection);
 
+        this.renameBoardListener();
 
     },
     newCard: function () {

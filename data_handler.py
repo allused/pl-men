@@ -93,4 +93,5 @@ def delete_element(table, element_id):
     if table == 'cards':
         persistence.delete_card(element_id)
     else:
+        ##TODO: ADD DELETE TABLE BY ID FOR PESISTANCE & BELOW
         pass

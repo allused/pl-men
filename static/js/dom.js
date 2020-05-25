@@ -160,8 +160,8 @@ export let dom = {
             } else {
                 event.target.insertAdjacentElement('beforeend', card)
             }
-            let current_status = event.target.parentNode.parentNode.parentNode.querySelector('.board-column-title').innerText
-
+            let current_status = event.target.parentNode.querySelector('.board-column-title').innerText;
+           
             if (current_status == 'new') {
                 card.id = 0;
             } else if (current_status == 'in progress') {
@@ -173,6 +173,7 @@ export let dom = {
             }
 
             let card_id = card.dataset['id'];
+            console.log(card_id, card.id)
             dataHandler.saveCardStatusById(card_id, card.id);
         }
     },

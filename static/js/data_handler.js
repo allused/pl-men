@@ -17,9 +17,18 @@ export let dataHandler = {
         .then(json_response => callback(json_response));  // Call the `callback` with the returned object
     },
     _api_post: function (url, data, callback) {
-        // it is not called from outside
-        // sends the data to the API, and calls callback function
+
+        fetch(url,{
+            method:'POST',
+            cache: 'no-cache',
+            credentials: "include",
+            body: JSON.stringify(data),
+            headers: new Headers({"content-type": "application/json"})
+
+
+        })
     },
+
     init: function () {
     },
     getBoards: function (callback) {
@@ -33,26 +42,94 @@ export let dataHandler = {
             callback(response);
         });
     },
+
     getBoard: function (boardId, callback) {
         // the board is retrieved and then the callback function is called with the board
     },
     getStatuses: function (callback) {
+        this._api_get('/get-statuses', (response) => {
+            this._data = response;
+            callback(response);
+        });
         // the statuses are retrieved and then the callback function is called with the statuses
     },
     getStatus: function (statusId, callback) {
         // the status is retrieved and then the callback function is called with the status
     },
     getCardsByBoardId: function (boardId, callback) {
-        // the cards are retrieved and then the callback function is called with the cards
+
+        this._api_get(`/get-cards/${board_id}`)
     },
     getCard: function (cardId, callback) {
         // the card is retrieved and then the callback function is called with the card
     },
-    createNewBoard: function (boardTitle, callback) {
+    getCards: function(callback) {
+        this._api_get('/get-cards', (response) => {
+            this._data = response;
+
+            callback(response);
+        })
+    },
+
+
+    getLastId: function(table_name, callback){
+          this._api_get(`/get_${table_name}_id`, (response)=>{
+                this._data = response;
+
+                callback(response);
+
+          })
 
     },
-    createNewCard: function (cardTitle, boardId, statusId, callback) {
-        // creates new card, saves it and calls the callback function with its data
-    }
+
+
+    createNewBoard: function (boardTitle) {
+        this._api_post('http://127.0.0.1:5000/save-board', boardTitle);
+    },
+    createNewCard: function ( boardTitle, cardTitle='name me', statusId=0) {
+        let cardData = {
+            'cardtitle':cardTitle,
+            'boardtitle':boardTitle,
+            'statusid':statusId,
+            }
+
+        this._api_post('http://127.0.0.1:5000/save-card', cardData)
+    },
     // here comes more features
+
+    setNewBoardTitle: function (oldTitle, newTitle) {
+       let titles = {
+           'new_title': newTitle,
+           'old_title': oldTitle
+       }
+        this._api_post('http://127.0.0.1:5000/rename-board', titles)
+    },
+    saveCardStatusById: function (id, status) {
+        let cardDetails = {
+            'id':id,
+            'status':status
+        }
+        this._api_post('/save-card-status', cardDetails)
+
+    },
+
+    saveCardNameById: function (id, new_name) {
+        let cardDetails = {
+            'id':id,
+            'name':new_name
+        }
+        this._api_post('/save-card-name', cardDetails)
+
+    },
+
+    deleteTableDataById: function (table, element_id) {
+
+        let elementDetails = {
+            'table':table,
+            'id':element_id
+        }
+
+        this._api_post('/delete-element', elementDetails);
+
+    }
 };

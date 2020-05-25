@@ -45,8 +45,7 @@ def get_cards_for_board(board_id):
 
 
 def update_card_status(card_id, new_status):
-
-    return persistence.save_card_status_by_id(card_id,new_status)
+    return persistence.save_card_status_by_id(card_id, new_status)
 
 
 def get_cards():
@@ -88,3 +87,10 @@ def rename(table, old_title, new_title):
 
 def rename_card(id, new_name):
     persistence.rename_card(new_name, id)
+
+
+def delete_element(table, element_id):
+    if table == 'cards':
+        persistence.delete_card(element_id)
+    else:
+        pass

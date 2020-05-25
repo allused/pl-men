@@ -99,6 +99,7 @@ export let dom = {
         dom.cardsDragDrop();
         dom.testListener();
         dom.renameCard();
+        dom.deleteCard();
         this.renameBoardListener();
         this.closeButtonListener();
     },
@@ -172,7 +173,6 @@ export let dom = {
             }
 
             let card_id = card.dataset['id'];
-            //console.log(card)
             dataHandler.saveCardStatusById(card_id, card.id);
         }
     },
@@ -301,13 +301,13 @@ export let dom = {
     },
 
     renameCard: function () {
-        let cards = document.querySelectorAll('.card')
+        let cards = document.querySelectorAll('.card-title')
         for (let card of cards) {
             card.addEventListener('click', (event) => {
                 let original_name = event.target.innerText;
                 let target_card_id = event.target.parentNode.dataset['id'];
                 let new_name = prompt('Give a new name: ')
-                if (new_name == null){
+                if (new_name == null) {
                     event.target.innerText = original_name;
                 } else {
                     event.target.innerText = new_name;
@@ -315,6 +315,26 @@ export let dom = {
                 }
 
 
+            })
+        }
+    },
+
+    deleteCard: function(){
+        let trashIconElements = document.querySelectorAll('.fa-trash-alt');
+        let table;
+        let targetElementId;
+        for (let icon of trashIconElements){
+            icon.addEventListener('click', event=>{
+
+                if (event.target.parentNode.classList.value.includes('card') == true){
+                  targetElementId = event.target.parentNode.parentNode.dataset['id'];
+                    table = 'cards';
+                    dataHandler.deleteTableDataById(table, targetElementId);
+                    event.target.parentNode.parentNode.remove();
+                    console.log()
+                }else {
+                    table = 'boards';
+                }
 
             })
         }

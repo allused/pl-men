@@ -126,7 +126,7 @@ def save_card_status_by_id(cursor, card_id, new_status):
         SET status_id = %(new_status)s
         WHERE id = %(card_id)s;
         """
-    cursor.execute(query, {'card_id':card_id, 'new_status':new_status})
+    cursor.execute(query, {'card_id': card_id, 'new_status': new_status})
 
 
 @database_common.connection_handler
@@ -146,6 +146,13 @@ def rename_card(cursor, new_name, id):
         UPDATE cards
         SET title = %(new_name)s
         WHERE id = %(id)s
-        """, {'new_name':new_name, 'id':id})
+        """, {'new_name': new_name, 'id': id})
 
 
+@database_common.connection_handler
+def delete_card(cursor, element_id):
+    cursor.execute("""
+        DELETE
+        FROM cards
+        WHERE id = %(element_id)s;
+        """, {'element_id':element_id})

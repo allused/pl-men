@@ -120,5 +120,16 @@ export let dataHandler = {
         }
         this._api_post('/save-card-name', cardDetails)
 
+    },
+
+    deleteTableDataById: function (table, element_id) {
+
+        let elementDetails = {
+            'table':table,
+            'id':element_id
+        }
+
+        this._api_post('/delete-element', elementDetails);
+
     }
 };

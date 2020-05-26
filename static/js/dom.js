@@ -5,13 +5,12 @@ export let dom = {
     init: function () {
 
         this.newBoardButton();
-        dom.addCardListener();
+        //dom.addCardListener();
 
         dom.renameBoardListener();
         dom.cardsDragDrop();
         dataHandler.getLastId('boards', function (id) {
             let newId = parseInt(id['id']) + 1;
-            console.log(newId)
 
         })
 
@@ -40,7 +39,7 @@ export let dom = {
                         ${statuses[i].title}
                     </div>
 
-                    <div  class="board-column-content" ></div>
+                    <div  class="board-column-content spawn" ></div>
 
                 </div>
             `);
@@ -78,7 +77,7 @@ export let dom = {
             let boardsContainer = document.querySelector('#boards');
             boardsContainer.innerHTML = boardContainer
         }
-        this.addCardListener();
+        //this.addCardListener();
 
         for (let i = 0; i < boards.length; i++) {
             for (let j = 0; j < statuses.length; j++) {
@@ -99,6 +98,7 @@ export let dom = {
         dom.cardsDragDrop();
         dom.renameCard();
         dom.deleteCard();
+        dom.addCardListener();
         this.renameBoardListener();
         this.closeButtonListener();
     },
@@ -200,8 +200,8 @@ export let dom = {
                             <button  class="board-add">Add Card</button><button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
                             </div>`;
 
-        const columnNew = `<div  class="board-column-title">New</div>
-                                <div  class="board-column-content" ></div>`;
+        const columnNew = `<div  class="board-column-title ">New</div>
+                                <div  class="board-column-content spawn" ></div>`;
 
         const columnInProg = `<div class="board-column-title">In Progress</div>
                                 <div class="board-column-content"></div>`;
@@ -238,19 +238,25 @@ export let dom = {
     },
 
 
-    addCardListener: function () {
-        let cards = document.getElementsByClassName('board-add')
+    addCardListener: function (event) {
+        let cards = document.querySelectorAll('.board-add');
+        let boardTitle;
+        let targetElement;
+        let newCard;
         for (let card of cards) {
             card.addEventListener('click', (event) => {
+                boardTitle = event.target.parentNode.parentNode.querySelector('.board-title').innerText;
+                targetElement = event.target.parentNode.parentNode.querySelector('.spawn');
+                console.log(targetElement)
 
-                let boardTitle = event.target.parentNode.parentNode.querySelector('.board-title').innerText;
-
-                let targetElement = event.target.parentNode.parentNode.childNodes;
                 dataHandler.getLastId('cards', function (id) {
-                    targetElement.innerHTML += dom.newCard(id);
+
+                    
+                    targetElement.insertAdjacentHTML("beforeend", dom.newCard(id));
                 });
+
                 dataHandler.createNewCard(boardTitle);
-                dom.loadBoards();
+
             })
 
         }

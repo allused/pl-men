@@ -90,6 +90,7 @@ def rename_card(id, new_name):
 
 
 def delete_element(table, element_id):
+
     if table == 'cards':
         persistence.delete_card(element_id)
     else:

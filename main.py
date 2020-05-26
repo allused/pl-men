@@ -93,7 +93,6 @@ def get_cards():
 @app.route("/get_last_card_id")
 @json_response
 def get_last_card_id():
-
     pass
 
 
@@ -148,6 +147,38 @@ def save_card_status():
     data_handler.update_card_status(card_id, new_status)
 
     res = make_response(jsonify(req), 200)
+
+    return res
+
+
+@app.route("/get_<table>_id", methods=['GET', 'POST'])
+@json_response
+def get_last_table_id(table):
+    return data_handler.get_last_id(table)
+
+
+@app.route('/save-card-name', methods=['GET', 'POST'])
+def save_card_new_name():
+    req = request.get_json()
+
+    new_name = req['name']
+    card_id = int(req['id'])
+    data_handler.rename_card(card_id, new_name)
+
+    res = make_response(jsonify(req), 200)
+
+    return res
+
+
+@app.route('/delete-element', methods=['POST'])
+def delete_element_by_id():
+    req = request.get_json()
+
+    table_name = req['table']
+    element_id = int(req['id'])
+    data_handler.delete_element(table_name, element_id)
+
+    res = make_response('we are cool', 200)
 
     return res
 

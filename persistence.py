@@ -1,56 +1,3 @@
-# import csv
-# import sql_data_handler as sql
-#
-# STATUSES_FILE = './data/statuses.csv'
-# BOARDS_FILE = './data/boards.csv'
-# CARDS_FILE = './data/cards.csv'
-#
-# _cache = {}  # We store cached data in this dict to avoid multiple file readings
-#
-#
-# def _read_csv(file_name):
-#     """
-#     Reads content of a .csv file
-#     :param file_name: relative path to data file
-#     :return: OrderedDict
-#     """
-#     with open(file_name) as boards:
-#         rows = csv.DictReader(boards, delimiter=',', quotechar='"')
-#         formatted_data = []
-#         for row in rows:
-#             formatted_data.append(dict(row))
-#         return formatted_data
-#
-#
-# def _get_data(data_type, file, force):
-#     """
-#     Reads defined type of data from file or cache
-#     :param data_type: key where the data is stored in cache
-#     :param file: relative path to data file
-#     :param force: if set to True, cache will be ignored
-#     :return: OrderedDict
-#     """
-#     if force or data_type not in _cache:
-#         _cache[data_type] = _read_csv(file)
-#     return _cache[data_type]
-#
-#
-# def clear_cache():
-#     for k in list(_cache.keys()):
-#         _cache.pop(k)
-#
-#
-# def get_statuses(force=False):
-#     return _get_data('statuses', STATUSES_FILE, force)
-#
-#
-# def get_boards(force=False):
-#     return _get_data('boards', BOARDS_FILE, force)
-#
-#
-# def get_cards(force=False):
-#     return _get_data('cards', CARDS_FILE, force)
-
 from psycopg2.extras import RealDictCursor
 import database_common
 from psycopg2 import sql
@@ -179,4 +126,43 @@ def save_card_status_by_id(cursor, card_id, new_status):
         SET status_id = %(new_status)s
         WHERE id = %(card_id)s;
         """
-    cursor.execute(query, {'card_id':card_id, 'new_status':new_status})
+    cursor.execute(query, {'card_id': card_id, 'new_status': new_status})
+
+
+@database_common.connection_handler
+def get_last_table_id(cursor, table):
+    cursor.execute(sql.SQL("""
+        SELECT id
+        FROM {table}
+        ORDER BY id DESC 
+        LIMIT 1
+        """).format(table=sql.SQL(table)))
+    return cursor.fetchone()
+
+
+@database_common.connection_handler
+def rename_card(cursor, new_name, id):
+    cursor.execute("""
+        UPDATE cards
+        SET title = %(new_name)s
+        WHERE id = %(id)s
+        """, {'new_name': new_name, 'id': id})
+
+
+@database_common.connection_handler
+def delete_card(cursor, element_id):
+    cursor.execute("""
+        DELETE
+        FROM cards
+        WHERE id = %(element_id)s;
+        """, {'element_id':element_id})
+
+
+@database_common.connection_handler
+def delete_table(cursor, table_id):
+    cursor.execute("""      
+        DELETE 
+        FROM boards
+        WHERE boards.id = %(table_id)s;
+        
+        """, {'table_id':table_id})

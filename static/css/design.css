@@ -127,3 +127,9 @@ section.board{
 .card-title{
     padding-right: 16px;
 }
+
+.board-remove {
+    width: 20px;
+    margin-left: 667px;
+    display: inline-block;
+}

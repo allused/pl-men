@@ -5,15 +5,15 @@ export let dom = {
     init: function () {
 
         this.newBoardButton();
-        dom.addCardListener();
+        //dom.addCardListener();
+
         dom.renameBoardListener();
         dom.cardsDragDrop();
+        dataHandler.getLastId('boards', function (id) {
+            let newId = parseInt(id['id']) + 1;
 
+        })
 
-
-
-
-        
 
     },
     loadBoards: function () {
@@ -39,7 +39,7 @@ export let dom = {
                         ${statuses[i].title}
                     </div>
 
-                    <div  class="board-column-content" ></div>
+                    <div  class="board-column-content spawn" ></div>
 
                 </div>
             `);
@@ -55,13 +55,14 @@ export let dom = {
         let boardSection = ''
         for (let i = 0; i < boards.length; i++) {
             boardSection += (`
-                <section class="board" id="${boards[i].id}">
+                <section class="board" data-id="${boards[i].id}">
                     <div class="board-header">
                         <span class="board-title">
                             ${boards[i].title}
                         </span>
                         <button class="board-add">Add Card</button>
                         <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                        <div class="board-remove"><i class="fas fa-trash-alt"></i></div>
                     </div>
                     ${boardColumns}
                 </section>`
@@ -76,17 +77,17 @@ export let dom = {
             let boardsContainer = document.querySelector('#boards');
             boardsContainer.innerHTML = boardContainer
         }
-        this.addCardListener();
-      
-        for (let i = 0; i < boards.length; i++){
-            for (let j = 0; j < statuses.length; j++){
-                for (let k = 0; k < cards.length; k++){
-                    if (cards[k].board_id === boards[i].id && cards[k].status_id === j){
+        //this.addCardListener();
+
+        for (let i = 0; i < boards.length; i++) {
+            for (let j = 0; j < statuses.length; j++) {
+                for (let k = 0; k < cards.length; k++) {
+                    if (cards[k].board_id === boards[i].id && cards[k].status_id === j) {
                         document.getElementsByClassName('board')[i]
                             .getElementsByClassName('board-column-content')[j].innerHTML += `
-                                <div class="card" draggable="true" >
+                                <div class="card" draggable="true"  data-id="${cards[k].id}">
                                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                                    <div class="card-title" id="${cards[k].id}">
+                                    <div class="card-title" id="${cards[k].status_id}">
                                          ${cards[k].title}
                                     </div>
                                 </div>`
@@ -95,75 +96,90 @@ export let dom = {
             }
         }
         dom.cardsDragDrop();
+        dom.renameCard();
+        dom.deleteCard();
+        dom.addCardListener();
         this.renameBoardListener();
         this.closeButtonListener();
     },
-  
+
     loadCardsById: function (boardId) {
 
     },
 
-    cardsDragDrop: function(event){
+    cardsDragDrop: function (event) {
         let card;
 
         let dragged = document.querySelectorAll('.card');
         let empties = document.querySelectorAll('.board-column-content');
 
-        for (let drag of dragged){
+        for (let drag of dragged) {
             drag.addEventListener('dragstart', dragStart);
             drag.addEventListener('dragend', dragEnd);
-            }
+        }
 
 
-        for (let empty of empties){
-                empty.addEventListener('dragover', dragOver);
-                empty.addEventListener('dragenter', dragEnter);
-                empty.addEventListener('dragleave', dragLeave);
-                empty.addEventListener('drop', dragDrop);
-                }
+        for (let empty of empties) {
+            empty.addEventListener('dragover', dragOver);
+            empty.addEventListener('dragenter', dragEnter);
+            empty.addEventListener('dragleave', dragLeave);
+            empty.addEventListener('drop', dragDrop);
+        }
 
         function dragStart(event) {
 
             card = event.toElement;
 
+
         }
+
         function dragEnd() {
+
         }
+
         function dragOver(e) {
             e.preventDefault();
 
         }
+
         function dragEnter() {
         }
+
         function dragLeave() {
 
         }
-        function dragDrop(event) {
-            console.log(card)
 
-            if (event.target.className == 'card'){
+        function dragDrop(event) {
+            let currentStatus;
+
+            if (event.target.className == 'card') {
                 event.target.parentNode.insertAdjacentElement('beforeend', card);
 
-            } else if (event.target.className == 'card-title'){
+            } else if (event.target.className == 'card-title') {
                 event.target.parentNode.parentNode.insertAdjacentElement('beforeend', card);
 
             } else {
                 event.target.insertAdjacentElement('beforeend', card)
             }
+            if (event.target.classList.value.includes('card') == true) {
+                currentStatus = event.target.parentNode.parentNode.parentNode.querySelector('.board-column-title').innerText;
+            } else {
+                currentStatus = event.target.parentNode.querySelector('.board-column-title').innerText;
+            }
 
-            let current_status = event.target.parentNode.childNodes[1].innerText
 
-            if (current_status == 'new'){
+            if (currentStatus == 'new') {
                 card.id = 0;
-            } else if (current_status == 'in progress'){
+            } else if (currentStatus == 'in progress') {
                 card.id = 1;
-            } else if (current_status == 'testing'){
+            } else if (currentStatus == 'testing') {
                 card.id = 2;
-            } else if (current_status == 'done'){
+            } else if (currentStatus == 'done') {
                 card.id = 3;
             }
-            let newID = card.childNodes[3].id;
-            dataHandler.saveCardStatusById(newID, card.id);
+
+            let card_id = card.dataset['id'];
+            dataHandler.saveCardStatusById(card_id, card.id);
         }
     },
 
@@ -184,8 +200,8 @@ export let dom = {
                             <button  class="board-add">Add Card</button><button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
                             </div>`;
 
-        const columnNew = `<div  class="board-column-title">New</div>
-                                <div  class="board-column-content" ></div>`;
+        const columnNew = `<div  class="board-column-title ">New</div>
+                                <div  class="board-column-content spawn" ></div>`;
 
         const columnInProg = `<div class="board-column-title">In Progress</div>
                                 <div class="board-column-content"></div>`;
@@ -214,34 +230,45 @@ export let dom = {
         this.renameBoardListener();
 
     },
-    newCard: function () {
-        const card = `<div class="card" draggable="true" id="0">
+    newCard: function (new_id) {
+        return `<div class="card" draggable="true" id="0" data-id="${new_id}">
                             <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                             <div class="card-title">name me</div>
                         </div>`
 
-        return card
-
     },
-    addCardListener: function () {
-        let cards = document.getElementsByClassName('board-add')
+
+
+    addCardListener: function (event) {
+        let cards = document.querySelectorAll('.board-add');
+        let boardTitle;
+        let targetElement;
+        let newCard;
         for (let card of cards) {
             card.addEventListener('click', (event) => {
-                let boardTitle = event.target.parentNode.parentNode.childNodes[1].childNodes[1].innerText;
-                let targetElement = event.target.parentNode.parentNode.childNodes[3].childNodes[1].childNodes[3];
-                targetElement.innerHTML += this.newCard();
+                boardTitle = event.target.parentNode.parentNode.querySelector('.board-title').innerText;
+                targetElement = event.target.parentNode.parentNode.querySelector('.spawn');
+                console.log(targetElement)
+
+                dataHandler.getLastId('cards', function (id) {
+
+                    
+                    targetElement.insertAdjacentHTML("beforeend", dom.newCard(id));
+                });
+
                 dataHandler.createNewCard(boardTitle);
-                dom.loadBoards();
+
             })
 
         }
 
     },
 
+
     getTitle: function () {
         let title = prompt('Enter the new board title:');
-        if (title !== 'null'){
-            dataHandler.createNewBoard(title, dataHandler._api_post );
+        if (title !== 'null') {
+            dataHandler.createNewBoard(title, dataHandler._api_post);
             dom.createBoard(title);
         }
 
@@ -267,24 +294,77 @@ export let dom = {
         let boardNames = document.getElementsByClassName('board-title');
         for (let bname of boardNames) {
             bname.addEventListener('click', (event) => {
-            let oldName = bname.innerText;
-            bname.innerText = dom.renameTitle(oldName);
-        })
+                let oldName = bname.innerText;
+                bname.innerText = dom.renameTitle(oldName);
+            })
         }
     },
 
+    renameCard: function () {
+        let cards = document.querySelectorAll('.card-title')
+        for (let card of cards) {
+            card.addEventListener('click', (event) => {
+                let original_name = event.target.innerText;
+                let target_card_id = event.target.parentNode.dataset['id'];
+                let new_name = prompt('Give a new name: ')
+                if (new_name == null) {
+                    event.target.innerText = original_name;
+                } else {
+                    event.target.innerText = new_name;
+                    dataHandler.saveCardNameById(target_card_id, new_name)
+                }
+
+
+            })
+        }
+    },
+
+    deleteCard: function () {
+        let trashIconElements = document.querySelectorAll('.fa-trash-alt');
+        let table;
+        let targetElementId;
+        let targetTableId;
+        for (let icon of trashIconElements) {
+            icon.addEventListener('click', event => {
+                console.log()
+                //It checks if there is 'card' in the target element, if yes it is a card
+                //remove button, but if there is no 'card' in the element, it is a table
+                if (event.target.parentNode.classList.value.includes('card') == true) {
+                    targetElementId = event.target.parentNode.parentNode.dataset['id'];
+                    table = 'cards';
+                    dataHandler.deleteTableDataById(table, targetElementId);
+                    event.target.parentNode.parentNode.remove();
+                } else {
+                    targetTableId = event.target.parentNode.parentNode.parentNode.dataset['id'];
+                    table = 'boards';
+                    dataHandler.deleteTableDataById(table, targetTableId);
+                    event.target.parentNode.parentNode.parentNode.remove();
+                }
+
+            })
+        }
+    },
+
+
+
     closeButtonListener: function () {
         let closeButtons = document.getElementsByClassName('board-toggle');
-        for (let closeBtn of closeButtons){
-            closeBtn.addEventListener('click', (event) =>{
+        for (let closeBtn of closeButtons) {
+            closeBtn.addEventListener('click', (event) => {
                 let element = event.target.parentElement.parentElement
                     .getElementsByClassName('board-columns')[0];
-                if (element.style.display === "none"){
+                if (element.style.display === "none") {
                     element.style.display = "flex";
-                }else{
+                } else {
                     element.style.display = "none";
                 }
             })
         }
+    },
+
+
+    deleteContent: function () {
+        const cards = document.querySelectorAll('.card-remove');
+        const tables = document.querySelectorAll('.')
     }
 };

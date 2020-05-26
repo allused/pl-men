@@ -128,6 +128,8 @@ section.board{
     padding-right: 16px;
 }
 
-.invisible {
-    display: none;
+.board-remove {
+    width: 20px;
+    margin-left: 667px;
+    display: inline-block;
 }

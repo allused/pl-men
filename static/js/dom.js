@@ -56,13 +56,14 @@ export let dom = {
         let boardSection = ''
         for (let i = 0; i < boards.length; i++) {
             boardSection += (`
-                <section class="board" id="${boards[i].id}">
+                <section class="board" data-id="${boards[i].id}">
                     <div class="board-header">
                         <span class="board-title">
                             ${boards[i].title}
                         </span>
                         <button class="board-add">Add Card</button>
                         <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                        <div class="board-remove"><i class="fas fa-trash-alt"></i></div>
                     </div>
                     ${boardColumns}
                 </section>`
@@ -129,9 +130,11 @@ export let dom = {
 
             card = event.toElement;
 
+
         }
 
         function dragEnd() {
+
         }
 
         function dragOver(e) {
@@ -313,22 +316,28 @@ export let dom = {
         let trashIconElements = document.querySelectorAll('.fa-trash-alt');
         let table;
         let targetElementId;
+        let targetTableId;
         for (let icon of trashIconElements) {
             icon.addEventListener('click', event => {
-
+                console.log()
+                //It checks if there is 'card' in the target element, if yes it is a card
+                //remove button, but if there is no 'card' in the element, it is a table
                 if (event.target.parentNode.classList.value.includes('card') == true) {
                     targetElementId = event.target.parentNode.parentNode.dataset['id'];
                     table = 'cards';
                     dataHandler.deleteTableDataById(table, targetElementId);
                     event.target.parentNode.parentNode.remove();
-                    console.log()
                 } else {
+                    targetTableId = event.target.parentNode.parentNode.parentNode.dataset['id'];
                     table = 'boards';
+                    dataHandler.deleteTableDataById(table, targetTableId);
+                    event.target.parentNode.parentNode.parentNode.remove();
                 }
 
             })
         }
     },
+
 
 
     closeButtonListener: function () {

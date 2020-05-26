@@ -160,14 +160,9 @@ def delete_card(cursor, element_id):
 
 @database_common.connection_handler
 def delete_table(cursor, table_id):
-    cursor.execute("""
-        DELETE 
-        FROM cards
-        WHERE cards.board_id = %(table_id)s;
-        
+    cursor.execute("""      
         DELETE 
         FROM boards
         WHERE boards.id = %(table_id)s;
-        
         
         """, {'table_id':table_id})

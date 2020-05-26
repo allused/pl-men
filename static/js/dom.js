@@ -39,7 +39,7 @@ export let dom = {
                         ${statuses[i].title}
                     </div>
 
-                    <div  class="board-column-content" ></div>
+                    <div  class="board-column-content spawn" ></div>
 
                 </div>
             `);
@@ -200,8 +200,8 @@ export let dom = {
                             <button  class="board-add">Add Card</button><button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
                             </div>`;
 
-        const columnNew = `<div  class="board-column-title">New</div>
-                                <div  class="board-column-content" ></div>`;
+        const columnNew = `<div  class="board-column-title ">New</div>
+                                <div  class="board-column-content spawn" ></div>`;
 
         const columnInProg = `<div class="board-column-title">In Progress</div>
                                 <div class="board-column-content"></div>`;
@@ -246,16 +246,17 @@ export let dom = {
         for (let card of cards) {
             card.addEventListener('click', (event) => {
                 boardTitle = event.target.parentNode.parentNode.querySelector('.board-title').innerText;
-                targetElement = event.target.parentNode.parentNode;
+                targetElement = event.target.parentNode.parentNode.querySelector('.spawn');
                 console.log(targetElement)
 
                 dataHandler.getLastId('cards', function (id) {
 
-                    newCard = dom.newCard(id);
+                    
+                    targetElement.insertAdjacentHTML("beforeend", dom.newCard(id));
                 });
-                targetElement.insertAdjacentHTML("beforeend", newCard);
+
                 dataHandler.createNewCard(boardTitle);
-                //dom.loadBoards();
+
             })
 
         }

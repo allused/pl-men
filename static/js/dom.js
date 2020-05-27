@@ -1,5 +1,6 @@
 // It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
+// import {util} from "./util";
 
 export let dom = {
     init: function () {
@@ -18,13 +19,17 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-
-        dataHandler.getBoards(function (boards) {
-            dataHandler.getStatuses(function (statuses) {
-                dataHandler.getCards(function (cards) {
-                    dom.showBoards(statuses, boards, cards);
+        dataHandler.getSession( function (sessionData) {
+            dataHandler.getBoards(function (boards) {
+                console.log(boards)
+                dom.checkBoards(boards, sessionData['id']);
+                console.log(boards)
+                dataHandler.getStatuses(function (statuses) {
+                    dataHandler.getCards(function (cards) {
+                        dom.showBoards(statuses, boards, cards);
                 });
             });
+        });
         });
     },
     showBoards: function (statuses, boards, cards) {
@@ -360,6 +365,16 @@ export let dom = {
                 }
             })
         }
+    },
+
+
+    checkBoards: function (boards, userId) {
+    for (let i = 0; i < boards.length; i++ ) {
+            if (userId != boards[i]['user_id'] && boards[i]['private']) {
+                boards.splice(i, 1);
+            };
+        };
+        return boards
     },
 
 

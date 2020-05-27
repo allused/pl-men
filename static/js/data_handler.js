@@ -131,5 +131,12 @@ export let dataHandler = {
 
         this._api_post('/delete-element', elementDetails);
 
+    },
+
+    getSession: function (callback) {
+        this._api_get('/get-session-details', (response) => {
+            this._data = response;
+            callback(response)
+        })
     }
 };

@@ -157,6 +157,14 @@ def get_last_table_id(table):
     return data_handler.get_last_id(table)
 
 
+@app.route('/get-session-details', methods=['GET', 'POST'])
+@json_response
+def get_session_details():
+    if session:
+        session_deatils = {key: session[key] for key in session}
+        return session_deatils
+
+
 @app.route('/save-card-name', methods=['GET', 'POST'])
 def save_card_new_name():
     req = request.get_json()

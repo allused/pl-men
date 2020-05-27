@@ -242,7 +242,6 @@ export let dom = {
         let cards = document.querySelectorAll('.board-add');
         let boardTitle;
         let targetElement;
-        let newCard;
         for (let card of cards) {
             card.addEventListener('click', (event) => {
                 boardTitle = event.target.parentNode.parentNode.querySelector('.board-title').innerText;
@@ -251,7 +250,6 @@ export let dom = {
 
                 dataHandler.getLastId('cards', function (id) {
 
-                    
                     targetElement.insertAdjacentHTML("beforeend", dom.newCard(id));
                 });
 

@@ -21,9 +21,9 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getSession( function (sessionData) {
             dataHandler.getBoards(function (boards) {
-                console.log(boards)
+                console.log(boards);
                 dom.checkBoards(boards, sessionData['id']);
-                console.log(boards)
+                console.log(boards);
                 dataHandler.getStatuses(function (statuses) {
                     dataHandler.getCards(function (cards) {
                         dom.showBoards(statuses, boards, cards);
@@ -272,10 +272,17 @@ export let dom = {
 
     getTitle: function () {
         let title = prompt('Enter the new board title:');
-        if (title !== 'null') {
-            dataHandler.createNewBoard(title, dataHandler._api_post);
+        dataHandler.getSession( function (userData) {
+            if (title !== 'null') {
+            let boardData = {
+                'title': title,
+                'user_id': userData['id']
+            }
+            dataHandler.createNewBoard(boardData, dataHandler._api_post);
             dom.createBoard(title);
-        }
+        };
+        });
+
 
     },
 

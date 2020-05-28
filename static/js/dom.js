@@ -18,7 +18,11 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getSession( function (sessionData) {
             dataHandler.getBoards(function (boards) {
-                dom.checkBoards(boards, sessionData['id']);
+                if (sessionData) {
+                    dom.checkBoards(boards, sessionData['id']);
+                } else {
+                    dom.loadPublic(boards)
+                }
                 dataHandler.getStatuses(function (statuses) {
                     dataHandler.getCards(function (cards) {
                         dom.showBoards(statuses, boards, cards);
@@ -415,6 +419,16 @@ export let dom = {
     checkBoards: function (boards, userId) {
     for (let i = 0; i < boards.length; i++ ) {
             if (userId != boards[i]['user_id'] && boards[i]['private']) {
+                boards.splice(i, 1);
+            };
+        };
+        return boards
+    },
+
+
+    loadPublic: function (boards) {
+    for (let i = 0; i < boards.length; i++ ) {
+            if (boards[i]['private']) {
                 boards.splice(i, 1);
             };
         };

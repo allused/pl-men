@@ -66,6 +66,10 @@ export let dom = {
                             ${boards[i].title}
                         </span>
                         <button class="board-add">Add Card</button>
+                         <!--   <label class="switch">-->
+                            <!--  <input type="checkbox">-->
+                            <!--  <span class="slider"></span>-->
+                            <!--</label>-->
                         <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
                         <div class="board-remove"><i class="fas fa-trash-alt"></i></div>
                     </div>

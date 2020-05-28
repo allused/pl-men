@@ -7,13 +7,10 @@ export let dom = {
 
         this.newBoardButton();
         //dom.addCardListener();
+        dom.showArchivesBtn()
 
         dom.renameBoardListener();
         dom.cardsDragDrop();
-        dataHandler.getLastId('boards', function (id) {
-            let newId = parseInt(id['id']) + 1;
-
-        })
 
 
     },
@@ -84,16 +81,19 @@ export let dom = {
             let boardsContainer = document.querySelector('#boards');
             boardsContainer.innerHTML = boardContainer
         }
-        //this.addCardListener();
 
         for (let i = 0; i < boards.length; i++) {
             for (let j = 0; j < statuses.length; j++) {
                 for (let k = 0; k < cards.length; k++) {
                     if (cards[k].board_id === boards[i].id && cards[k].status_id === j) {
+                        let displayNoneClass = "";
+                        if (cards[k].archive === true){
+                            displayNoneClass = "archive";
+                        }
                         document.getElementsByClassName('board')[i]
                             .getElementsByClassName('board-column-content')[j].innerHTML += `
-                                <div class="card" draggable="true"  data-id="${cards[k].id}">
-                                    <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                                <div class="card ${displayNoneClass}" draggable="true"  data-id="${cards[k].id}">
+                                    <div class="card-remove"><i class="fas fa-archive"></i> <i class="fas fa-trash-alt"></i></div>
                                     <div class="card-title" id="${cards[k].status_id}">
                                          ${cards[k].title}
                                     </div>
@@ -106,13 +106,11 @@ export let dom = {
         dom.renameCard();
         dom.deleteCard();
         dom.addCardListener();
+        dom.archive_card();
         this.renameBoardListener();
         this.closeButtonListener();
     },
 
-    loadCardsById: function (boardId) {
-
-    },
 
     cardsDragDrop: function (event) {
         let card;
@@ -190,15 +188,6 @@ export let dom = {
         }
     },
 
-    showBoard: function (title) {
-        let boardsContainer = document.querySelector('#boards');
-
-
-    },
-
-    returnTitle: function (title) {
-        return title
-    },
 
     createBoard: function (title) {
 
@@ -237,33 +226,30 @@ export let dom = {
         this.renameBoardListener();
 
     },
+
     newCard: function (new_id) {
         return `<div class="card" draggable="true" id="0" data-id="${new_id}">
-                            <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                            <div class="card-remove"><i class="fas fa-archive"></i> <i class="fas fa-trash-alt"></i></div>
                             <div class="card-title">name me</div>
                         </div>`
 
     },
 
-
     addCardListener: function (event) {
         let cards = document.querySelectorAll('.board-add');
         let boardTitle;
         let targetElement;
-        let newCard;
         for (let card of cards) {
             card.addEventListener('click', (event) => {
                 boardTitle = event.target.parentNode.parentNode.querySelector('.board-title').innerText;
                 targetElement = event.target.parentNode.parentNode.querySelector('.spawn');
-                console.log(targetElement)
 
                 dataHandler.getLastId('cards', function (id) {
 
-                    
                     targetElement.insertAdjacentHTML("beforeend", dom.newCard(id));
                 });
 
-                dataHandler.createNewCard(boardTitle);
+                dataHandler.createNewCard(boardTitle, dom.loadBoards());
 
             })
 
@@ -291,6 +277,35 @@ export let dom = {
     newBoardButton: function () {
         let newBoardBt = document.getElementById('new-board');
         newBoardBt.addEventListener('click', dom.getTitle);
+    },
+
+    showArchivesBtn: function() {
+        let showBtn = document.querySelector('#archive-cards-btn');
+        showBtn.addEventListener('click', (event) => {
+            if (event.target.getAttribute('data-on-off') === "off"){
+                event.target.setAttribute('data-on-off', "on");
+                event.target.innerHTML = "Hide archive cards";
+                dom.showArchiveCards();
+            } else {
+                event.target.setAttribute('data-on-off', "off");
+                event.target.innerHTML = "Show archive cards";
+                dom.hideArchiveCards();
+            }
+        })
+    },
+
+    showArchiveCards: function() {
+        let archiveCards = document.querySelectorAll('.archive');
+        for (let card of archiveCards){
+            card.classList.add('show-archives');
+        }
+    },
+
+    hideArchiveCards: function() {
+        let archiveCards = document.querySelectorAll('.archive');
+        for (let card of archiveCards){
+            card.classList.remove('show-archives');
+        }
     },
 
 
@@ -328,9 +343,29 @@ export let dom = {
                     dataHandler.saveCardNameById(target_card_id, new_name)
                 }
 
-
             })
         }
+    },
+
+    archive_card: function  () {
+        let archiveIconElements = document.querySelectorAll('.fa-archive');
+        for (let icon of archiveIconElements) {
+            icon.addEventListener('click', event => {
+                let target = event.target.parentNode.parentNode;
+                dataHandler.archiveCardById(target.dataset['id']);
+                if (target.classList.value.includes("archive")){
+                    target.classList.remove("archive");
+                    target.classList.remove("show-archives");
+                } else {
+                    target.classList.add("archive");
+                    if (document.getElementById("archive-cards-btn")
+                        .getAttribute('data-on-off') === 'on'){
+                        target.classList.add("show-archives");
+                    }
+                }
+            })
+        }
+
     },
 
     deleteCard: function () {

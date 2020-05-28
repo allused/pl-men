@@ -139,5 +139,11 @@ export let dataHandler = {
             this._data = response;
             callback(response)
         })
+    },
+
+    archiveCardById: function (card_id) {
+
+        this._api_post(`/archive_${card_id}`);
+
     }
 };

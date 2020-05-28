@@ -96,3 +96,7 @@ def delete_element(table, element_id):
     else:
         persistence.delete_table(element_id)
 
+
+def archiveCard(card_id):
+
+    persistence.archive(card_id)

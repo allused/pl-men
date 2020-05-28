@@ -135,3 +135,12 @@ section.board{
     margin-top: 16px;
     display: inline-block;
 }
+
+.archive{
+    display: none;
+}
+
+.show-archives{
+    display: block;
+    opacity: 0.3;
+}

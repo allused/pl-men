@@ -182,6 +182,15 @@ def delete_element_by_id():
     return res
 
 
+@app.route('/archive_<card_id>', methods=['POST'])
+def archive_card(card_id):
+    data_handler.archiveCard(card_id)
+
+    res = make_response('ok', 200)
+
+    return res
+
+
 def main():
     app.run(debug=True)
 

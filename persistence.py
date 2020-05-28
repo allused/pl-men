@@ -61,12 +61,12 @@ def save_user_data(cursor, user_data):
 
 
 @database_common.connection_handler
-def save_new_board(cursor, title):
+def save_new_board(cursor, board_data):
     query = """
-        INSERT INTO boards (title)
-        VALUES (%(title)s);
+        INSERT INTO boards (title, user_id)
+        VALUES (%(title)s, %(user_id)s);
         """
-    cursor.execute(query, {'title': title})
+    cursor.execute(query, board_data)
 
 
 @database_common.connection_handler
@@ -166,3 +166,16 @@ def delete_table(cursor, table_id):
         WHERE boards.id = %(table_id)s;
         
         """, {'table_id':table_id})
+
+
+@database_common.connection_handler
+def archive(cursor: RealDictCursor, card_id: int):
+    query = """
+        UPDATE cards
+        SET archive = (
+        CASE 
+            WHEN cards.archive = false THEN true
+            ELSE false
+        END)
+        WHERE id = %(card_id)s;"""
+    cursor.execute(query, {'card_id': card_id})

@@ -27,7 +27,7 @@ def verify_password(password, hashed_pass):
 
 
 def check_login(username, password):
-    user = data_handler.get_user_details(username)
+    user = data_handler.get_user_by_name(username)
     if user == {}:
         return False
     else:

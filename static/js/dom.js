@@ -1,30 +1,34 @@
 // It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
+// import {util} from "./util";
 
 export let dom = {
     init: function () {
 
         this.newBoardButton();
         //dom.addCardListener();
+        dom.showArchivesBtn()
 
         dom.renameBoardListener();
         dom.cardsDragDrop();
-        dataHandler.getLastId('boards', function (id) {
-            let newId = parseInt(id['id']) + 1;
-
-        })
 
 
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-
-        dataHandler.getBoards(function (boards) {
-            dataHandler.getStatuses(function (statuses) {
-                dataHandler.getCards(function (cards) {
-                    dom.showBoards(statuses, boards, cards);
+        dataHandler.getSession( function (sessionData) {
+            dataHandler.getBoards(function (boards) {
+                if (sessionData) {
+                    dom.checkBoards(boards, sessionData['id']);
+                } else {
+                    dom.loadPublic(boards)
+                }
+                dataHandler.getStatuses(function (statuses) {
+                    dataHandler.getCards(function (cards) {
+                        dom.showBoards(statuses, boards, cards);
                 });
             });
+        });
         });
     },
     showBoards: function (statuses, boards, cards) {
@@ -39,7 +43,7 @@ export let dom = {
                         ${statuses[i].title}
                     </div>
 
-                    <div  class="board-column-content" ></div>
+                    <div  class="board-column-content spawn" ></div>
 
                 </div>
             `);
@@ -61,6 +65,10 @@ export let dom = {
                             ${boards[i].title}
                         </span>
                         <button class="board-add">Add Card</button>
+                         <!--   <label class="switch">-->
+                            <!--  <input type="checkbox">-->
+                            <!--  <span class="slider"></span>-->
+                            <!--</label>-->
                         <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
                         <div class="board-remove"><i class="fas fa-trash-alt"></i></div>
                     </div>
@@ -77,16 +85,19 @@ export let dom = {
             let boardsContainer = document.querySelector('#boards');
             boardsContainer.innerHTML = boardContainer
         }
-        //this.addCardListener();
 
         for (let i = 0; i < boards.length; i++) {
             for (let j = 0; j < statuses.length; j++) {
                 for (let k = 0; k < cards.length; k++) {
                     if (cards[k].board_id === boards[i].id && cards[k].status_id === j) {
+                        let displayNoneClass = "";
+                        if (cards[k].archive === true){
+                            displayNoneClass = "archive";
+                        }
                         document.getElementsByClassName('board')[i]
                             .getElementsByClassName('board-column-content')[j].innerHTML += `
-                                <div class="card" draggable="true"  data-id="${cards[k].id}">
-                                    <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                                <div class="card ${displayNoneClass}" draggable="true"  data-id="${cards[k].id}">
+                                    <div class="card-remove"><i class="fas fa-archive"></i> <i class="fas fa-trash-alt"></i></div>
                                     <div class="card-title" id="${cards[k].status_id}">
                                          ${cards[k].title}
                                     </div>
@@ -99,13 +110,11 @@ export let dom = {
         dom.renameCard();
         dom.deleteCard();
         dom.addCardListener();
+        dom.archive_card();
         this.renameBoardListener();
         this.closeButtonListener();
     },
 
-    loadCardsById: function (boardId) {
-
-    },
 
     cardsDragDrop: function (event) {
         let card;
@@ -183,15 +192,6 @@ export let dom = {
         }
     },
 
-    showBoard: function (title) {
-        let boardsContainer = document.querySelector('#boards');
-
-
-    },
-
-    returnTitle: function (title) {
-        return title
-    },
 
     createBoard: function (title) {
 
@@ -200,8 +200,8 @@ export let dom = {
                             <button  class="board-add">Add Card</button><button class="board-toggle"><i class="fas fa-chevron-down"></i></button> 
                             </div>`;
 
-        const columnNew = `<div  class="board-column-title">New</div>
-                                <div  class="board-column-content" ></div>`;
+        const columnNew = `<div  class="board-column-title ">New</div>
+                                <div  class="board-column-content spawn" ></div>`;
 
         const columnInProg = `<div class="board-column-title">In Progress</div>
                                 <div class="board-column-content"></div>`;
@@ -227,35 +227,34 @@ export let dom = {
         let boardsContainer = document.querySelector('.board-container');
         boardsContainer.insertAdjacentHTML("beforeend", boardSection);
 
+        this.renameBoardListener();
 
     },
+
     newCard: function (new_id) {
         return `<div class="card" draggable="true" id="0" data-id="${new_id}">
-                            <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                            <div class="card-remove"><i class="fas fa-archive"></i> <i class="fas fa-trash-alt"></i></div>
                             <div class="card-title">name me</div>
                         </div>`
 
     },
 
-
     addCardListener: function (event) {
         let cards = document.querySelectorAll('.board-add');
         let boardTitle;
         let targetElement;
-        let newCard;
         for (let card of cards) {
             card.addEventListener('click', (event) => {
                 boardTitle = event.target.parentNode.parentNode.querySelector('.board-title').innerText;
-                targetElement = event.target.parentNode.parentNode;
-                console.log(targetElement)
+                targetElement = event.target.parentNode.parentNode.querySelector('.spawn');
 
                 dataHandler.getLastId('cards', function (id) {
 
-                    newCard = dom.newCard(id);
+                    targetElement.insertAdjacentHTML("beforeend", dom.newCard(id));
                 });
-                targetElement.insertAdjacentHTML("beforeend", newCard);
-                dataHandler.createNewCard(boardTitle);
-                //dom.loadBoards();
+
+                dataHandler.createNewCard(boardTitle, dom.loadBoards());
+
             })
 
         }
@@ -265,16 +264,52 @@ export let dom = {
 
     getTitle: function () {
         let title = prompt('Enter the new board title:');
-        if (title !== 'null') {
-            dataHandler.createNewBoard(title, dataHandler._api_post);
+        dataHandler.getSession( function (userData) {
+            if (title !== 'null') {
+            let boardData = {
+                'title': title,
+                'user_id': userData['id']
+            }
+            dataHandler.createNewBoard(boardData, dataHandler._api_post);
             dom.createBoard(title);
-        }
+        };
+        });
+
 
     },
 
     newBoardButton: function () {
         let newBoardBt = document.getElementById('new-board');
         newBoardBt.addEventListener('click', dom.getTitle);
+    },
+
+    showArchivesBtn: function() {
+        let showBtn = document.querySelector('#archive-cards-btn');
+        showBtn.addEventListener('click', (event) => {
+            if (event.target.getAttribute('data-on-off') === "off"){
+                event.target.setAttribute('data-on-off', "on");
+                event.target.innerHTML = "Hide archive cards";
+                dom.showArchiveCards();
+            } else {
+                event.target.setAttribute('data-on-off', "off");
+                event.target.innerHTML = "Show archive cards";
+                dom.hideArchiveCards();
+            }
+        })
+    },
+
+    showArchiveCards: function() {
+        let archiveCards = document.querySelectorAll('.archive');
+        for (let card of archiveCards){
+            card.classList.add('show-archives');
+        }
+    },
+
+    hideArchiveCards: function() {
+        let archiveCards = document.querySelectorAll('.archive');
+        for (let card of archiveCards){
+            card.classList.remove('show-archives');
+        }
     },
 
 
@@ -312,9 +347,29 @@ export let dom = {
                     dataHandler.saveCardNameById(target_card_id, new_name)
                 }
 
-
             })
         }
+    },
+
+    archive_card: function  () {
+        let archiveIconElements = document.querySelectorAll('.fa-archive');
+        for (let icon of archiveIconElements) {
+            icon.addEventListener('click', event => {
+                let target = event.target.parentNode.parentNode;
+                dataHandler.archiveCardById(target.dataset['id']);
+                if (target.classList.value.includes("archive")){
+                    target.classList.remove("archive");
+                    target.classList.remove("show-archives");
+                } else {
+                    target.classList.add("archive");
+                    if (document.getElementById("archive-cards-btn")
+                        .getAttribute('data-on-off') === 'on'){
+                        target.classList.add("show-archives");
+                    }
+                }
+            })
+        }
+
     },
 
     deleteCard: function () {
@@ -358,6 +413,26 @@ export let dom = {
                 }
             })
         }
+    },
+
+
+    checkBoards: function (boards, userId) {
+    for (let i = 0; i < boards.length; i++ ) {
+            if (userId != boards[i]['user_id'] && boards[i]['private']) {
+                boards.splice(i, 1);
+            };
+        };
+        return boards
+    },
+
+
+    loadPublic: function (boards) {
+    for (let i = 0; i < boards.length; i++ ) {
+            if (boards[i]['private']) {
+                boards.splice(i, 1);
+            };
+        };
+        return boards
     },
 
 

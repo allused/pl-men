@@ -131,5 +131,11 @@ export let dataHandler = {
 
         this._api_post('/delete-element', elementDetails);
 
+    },
+
+    archiveCardById: function (card_id) {
+
+        this._api_post(`/archive_${card_id}`);
+
     }
 };

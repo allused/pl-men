@@ -166,3 +166,16 @@ def delete_table(cursor, table_id):
         WHERE boards.id = %(table_id)s;
         
         """, {'table_id':table_id})
+
+
+@database_common.connection_handler
+def archive(cursor: RealDictCursor, card_id: int):
+    query = """
+        UPDATE cards
+        SET archive = (
+        CASE 
+            WHEN cards.archive = false THEN true
+            ELSE false
+        END)
+        WHERE id = %(card_id)s;"""
+    cursor.execute(query, {'card_id': card_id})

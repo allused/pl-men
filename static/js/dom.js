@@ -21,9 +21,7 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getSession( function (sessionData) {
             dataHandler.getBoards(function (boards) {
-                console.log(boards);
                 dom.checkBoards(boards, sessionData['id']);
-                console.log(boards);
                 dataHandler.getStatuses(function (statuses) {
                     dataHandler.getCards(function (cards) {
                         dom.showBoards(statuses, boards, cards);

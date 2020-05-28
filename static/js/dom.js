@@ -10,10 +10,6 @@ export let dom = {
 
         dom.renameBoardListener();
         dom.cardsDragDrop();
-        dataHandler.getLastId('boards', function (id) {
-            let newId = parseInt(id['id']) + 1;
-
-        })
 
 
     },
@@ -78,7 +74,6 @@ export let dom = {
             let boardsContainer = document.querySelector('#boards');
             boardsContainer.innerHTML = boardContainer
         }
-        //this.addCardListener();
 
         for (let i = 0; i < boards.length; i++) {
             for (let j = 0; j < statuses.length; j++) {
@@ -109,9 +104,6 @@ export let dom = {
         this.closeButtonListener();
     },
 
-    loadCardsById: function (boardId) {
-
-    },
 
     cardsDragDrop: function (event) {
         let card;
@@ -189,15 +181,6 @@ export let dom = {
         }
     },
 
-    showBoard: function (title) {
-        let boardsContainer = document.querySelector('#boards');
-
-
-    },
-
-    returnTitle: function (title) {
-        return title
-    },
 
     createBoard: function (title) {
 
@@ -235,6 +218,7 @@ export let dom = {
 
 
     },
+
     newCard: function (new_id) {
         return `<div class="card" draggable="true" id="0" data-id="${new_id}">
                             <div class="card-remove"><i class="fas fa-archive"></i> <i class="fas fa-trash-alt"></i></div>
@@ -243,21 +227,17 @@ export let dom = {
 
     },
 
-
     addCardListener: function (event) {
         let cards = document.querySelectorAll('.board-add');
         let boardTitle;
         let targetElement;
-        let newCard;
         for (let card of cards) {
             card.addEventListener('click', (event) => {
                 boardTitle = event.target.parentNode.parentNode.querySelector('.board-title').innerText;
                 targetElement = event.target.parentNode.parentNode.querySelector('.spawn');
-                console.log(targetElement)
 
                 dataHandler.getLastId('cards', function (id) {
 
-                    
                     targetElement.insertAdjacentHTML("beforeend", dom.newCard(id));
                 });
 
@@ -347,7 +327,6 @@ export let dom = {
                     event.target.innerText = new_name;
                     dataHandler.saveCardNameById(target_card_id, new_name)
                 }
-
 
             })
         }

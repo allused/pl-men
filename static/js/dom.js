@@ -224,7 +224,7 @@ export let dom = {
 
         const boardSection = `<section class="board">${boardHead}${boardColumns}</section>`;
 
-        let boardsContainer = document.querySelector('.board-container');
+        let boardsContainer = document.querySelector('#boards');
         boardsContainer.insertAdjacentHTML("beforeend", boardSection);
 
         this.renameBoardListener();

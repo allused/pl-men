@@ -1,5 +1,6 @@
 // It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
+// import {util} from "./util";
 
 export let dom = {
     init: function () {
@@ -15,13 +16,19 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        console.log('load board');
-        dataHandler.getBoards(function (boards) {
-            dataHandler.getStatuses(function (statuses) {
-                dataHandler.getCards(function (cards) {
-                    dom.showBoards(statuses, boards, cards);
+        dataHandler.getSession( function (sessionData) {
+            dataHandler.getBoards(function (boards) {
+                if (sessionData) {
+                    dom.checkBoards(boards, sessionData['id']);
+                } else {
+                    dom.loadPublic(boards)
+                }
+                dataHandler.getStatuses(function (statuses) {
+                    dataHandler.getCards(function (cards) {
+                        dom.showBoards(statuses, boards, cards);
                 });
             });
+        });
         });
     },
     showBoards: function (statuses, boards, cards) {
@@ -58,6 +65,10 @@ export let dom = {
                             ${boards[i].title}
                         </span>
                         <button class="board-add">Add Card</button>
+                         <!--   <label class="switch">-->
+                            <!--  <input type="checkbox">-->
+                            <!--  <span class="slider"></span>-->
+                            <!--</label>-->
                         <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
                         <div class="board-remove"><i class="fas fa-trash-alt"></i></div>
                     </div>
@@ -216,6 +227,7 @@ export let dom = {
         let boardsContainer = document.querySelector('.board-container');
         boardsContainer.insertAdjacentHTML("beforeend", boardSection);
 
+        this.renameBoardListener();
 
     },
 
@@ -252,10 +264,17 @@ export let dom = {
 
     getTitle: function () {
         let title = prompt('Enter the new board title:');
-        if (title !== 'null') {
-            dataHandler.createNewBoard(title, dataHandler._api_post);
+        dataHandler.getSession( function (userData) {
+            if (title !== 'null') {
+            let boardData = {
+                'title': title,
+                'user_id': userData['id']
+            }
+            dataHandler.createNewBoard(boardData, dataHandler._api_post);
             dom.createBoard(title);
-        }
+        };
+        });
+
 
     },
 
@@ -394,6 +413,26 @@ export let dom = {
                 }
             })
         }
+    },
+
+
+    checkBoards: function (boards, userId) {
+    for (let i = 0; i < boards.length; i++ ) {
+            if (userId != boards[i]['user_id'] && boards[i]['private']) {
+                boards.splice(i, 1);
+            };
+        };
+        return boards
+    },
+
+
+    loadPublic: function (boards) {
+    for (let i = 0; i < boards.length; i++ ) {
+            if (boards[i]['private']) {
+                boards.splice(i, 1);
+            };
+        };
+        return boards
     },
 
 

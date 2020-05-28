@@ -6,6 +6,8 @@ import data_handler
 
 app = Flask(__name__)
 
+app.secret_key = b'__420blzitfgt__/'
+
 
 @app.route("/")
 def index():
@@ -21,10 +23,9 @@ def register():
         register_details = {
             'username': request.form['username'],
             'password': util.hash_pass(request.form['password']),
-            'verification': util.hash_pass(request.form['verification']),
             'email': request.form['email']
         }
-        if util.verify_password(register_details['password'], register_details['verification']):
+        if request.form['password'] == request.form['verification']:
             data_handler.save_user_data(register_details)
             return redirect('/login')
     return render_template('register.html')
@@ -37,7 +38,7 @@ def login():
             'username': request.form['username'],
             'password': util.hash_pass(request.form['password'])
         }
-        if util.check_login(login_details['username'], login_details['password']):
+        if util.check_login(login_details['username'], request.form['password']):
             user_data = data_handler.get_user_by_name(login_details['username'])
             for key in user_data:
                 session[key] = user_data[key]
@@ -47,7 +48,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    for key in session:
+    for key in [key for key in session]:
         session.pop(key, None)
     return redirect('/')
 
@@ -99,6 +100,7 @@ def get_last_card_id():
 def save_board():
     req = request.get_json()
     data_handler.add_new_board(req)
+    print(req)
 
     res = make_response(jsonify(req), 200)
 
@@ -154,6 +156,14 @@ def save_card_status():
 @json_response
 def get_last_table_id(table):
     return data_handler.get_last_id(table)
+
+
+@app.route('/get-session-details', methods=['GET', 'POST'])
+@json_response
+def get_session_details():
+    if session:
+        session_deatils = {key: session[key] for key in session}
+        return session_deatils
 
 
 @app.route('/save-card-name', methods=['GET', 'POST'])

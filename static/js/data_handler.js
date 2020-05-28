@@ -83,9 +83,10 @@ export let dataHandler = {
     },
 
 
-    createNewBoard: function (boardTitle) {
-        this._api_post('http://127.0.0.1:5000/save-board', boardTitle);
-    },
+    createNewBoard: function (boardData) {
+        this._api_post('http://127.0.0.1:5000/save-board', boardData);
+        },
+
     createNewCard: function ( boardTitle, cardTitle='name me', statusId=0) {
         let cardData = {
             'cardtitle':cardTitle,
@@ -131,6 +132,13 @@ export let dataHandler = {
 
         this._api_post('/delete-element', elementDetails);
 
+    },
+
+    getSession: function (callback) {
+        this._api_get('/get-session-details', (response) => {
+            this._data = response;
+            callback(response)
+        })
     },
 
     archiveCardById: function (card_id) {

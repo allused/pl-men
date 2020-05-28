@@ -64,8 +64,8 @@ def save_user_data(user_data):
     persistence.save_user_data(user_data)
 
 
-def add_new_board(title):
-    return persistence.save_new_board(title)
+def add_new_board(board_data):
+    return persistence.save_new_board(board_data)
 
 
 def insert_new_card(board_id, title, status_id):

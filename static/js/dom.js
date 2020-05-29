@@ -6,6 +6,7 @@ export let dom = {
     init: function () {
 
         this.newBoardButton();
+        dom.addCardListener();
         dom.showArchivesBtn()
         dom.renameBoardListener();
         dom.cardsDragDrop();
@@ -248,6 +249,7 @@ export let dom = {
         let targetElement;
         for (let card of cards) {
             card.addEventListener('click', (event) => {
+                console.log(event.target)
                 boardTitle = event.target.parentNode.parentNode.querySelector('.board-title').innerText;
                 targetElement = event.target.parentNode.parentNode.querySelector('.spawn');
 
@@ -284,6 +286,7 @@ export let dom = {
                 }
                 dataHandler.createNewBoard(boardData, dataHandler._api_post);
                 dom.createBoard(title);
+                dom.addCardListener();
             }
         });
 

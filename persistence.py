@@ -63,8 +63,8 @@ def save_user_data(cursor, user_data):
 @database_common.connection_handler
 def save_new_board(cursor, board_data):
     query = """
-        INSERT INTO boards (title, user_id)
-        VALUES (%(title)s, %(user_id)s);
+        INSERT INTO boards (title, user_id, privat)
+        VALUES (%(title)s, %(user_id)s, %(privat)s);
         """
     cursor.execute(query, board_data)
 

@@ -100,7 +100,6 @@ def get_last_card_id():
 def save_board():
     req = request.get_json()
     data_handler.add_new_board(req)
-    print(req)
 
     res = make_response(jsonify(req), 200)
 

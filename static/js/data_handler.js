@@ -43,9 +43,7 @@ export let dataHandler = {
         });
     },
 
-    getBoard: function (boardId, callback) {
-        // the board is retrieved and then the callback function is called with the board
-    },
+
     getStatuses: function (callback) {
         this._api_get('/get-statuses', (response) => {
             this._data = response;
@@ -53,16 +51,7 @@ export let dataHandler = {
         });
         // the statuses are retrieved and then the callback function is called with the statuses
     },
-    getStatus: function (statusId, callback) {
-        // the status is retrieved and then the callback function is called with the status
-    },
-    getCardsByBoardId: function (boardId, callback) {
 
-        this._api_get(`/get-cards/${board_id}`)
-    },
-    getCard: function (cardId, callback) {
-        // the card is retrieved and then the callback function is called with the card
-    },
     getCards: function(callback) {
         this._api_get('/get-cards', (response) => {
             this._data = response;
